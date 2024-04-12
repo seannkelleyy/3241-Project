@@ -30,9 +30,13 @@ namespace Bookstore.Data
                             {
                                 DataRow dataRow = dt.Rows[row];
                                 string isbn = dataRow[0].ToString();
-                                string title = dataRow[1].ToString();
+                                Debug.WriteLine(isbn);
+                                string title = dataRow[1].ToString().Replace("'", "''");
+                                Debug.WriteLine(title);
                                 string authorFullName = dataRow[2].ToString();
-                                string publisherName = dataRow[3].ToString();
+                                Debug.WriteLine(authorFullName);
+                                string publisherName = dataRow[3].ToString().Replace("'", "''");
+                                Debug.WriteLine(publisherName);
 
                                 // Split the author's full name into first, middle, and last name
                                 string[] authorNameParts = authorFullName.Split(' ');
@@ -116,7 +120,6 @@ namespace Bookstore.Data
                                 // Check if book already exists
                                 cmd.CommandText = $"SELECT COUNT(*) FROM Book WHERE ISBN = '{isbn}'";
                                 int bookCount = Convert.ToInt32(cmd.ExecuteScalar());
-                                Debug.WriteLine(bookCount);
 
                                 // If book does not exist, insert it
                                 if (bookCount == 0)
