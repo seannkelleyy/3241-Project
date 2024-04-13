@@ -7,7 +7,7 @@ namespace Bookstore.Data
 {
     public class LoadData
     {
-        public static void LoadExcelData(string pathToExcelFile)
+        public static void LoadExcelData(string pathToExcelFile, string pathToDatabase)
         {
             using (var stream = File.Open(pathToExcelFile, FileMode.Open, FileAccess.Read))
             {
@@ -17,70 +17,55 @@ namespace Bookstore.Data
                     var result = reader.AsDataSet();
                     DataTable dt = result.Tables[0];
 
-                    using (SqliteConnection conn = new SqliteConnection("Data Source=C:\\development\\cse\\3241-Project\\3241-Project.db;"))
+                    using (SqliteConnection conn = new SqliteConnection($"Data Source={pathToDatabase};"))
                     {
                         conn.Open();
 
                         using (SqliteCommand cmd = conn.CreateCommand())
                         {
+                            string? lastISBN = "";
                             cmd.CommandText = "BEGIN TRANSACTION;";
                             cmd.ExecuteNonQuery();
-                            // Insert Data from Excel to SQLite
-                            for (int row = 2; row < dt.Rows.Count; row++) // Start from index 3 to skip the first two rows
+
+                            for (int row = 2; row < dt.Rows.Count; row++) // Start from index 3 to skip the first two rows that contain headers
                             {
                                 DataRow dataRow = dt.Rows[row];
-                                string isbn = dataRow[0].ToString();
-                                Debug.WriteLine(isbn);
-                                string title = dataRow[1].ToString().Replace("'", "''");
-                                Debug.WriteLine(title);
-                                string authorFullName = dataRow[2].ToString();
-                                Debug.WriteLine(authorFullName);
-                                string publisherName = dataRow[3].ToString().Replace("'", "''");
-                                Debug.WriteLine(publisherName);
+                                Debug.WriteLine($"Processing row {row}...");
 
-                                // Split the author's full name into first, middle, and last name
-                                string[] authorNameParts = authorFullName.Split(' ');
-                                string firstName = authorNameParts[0];
-                                string middleName = authorNameParts.Length > 2 ? authorNameParts[1] : null;
-                                string lastName = authorNameParts.Length > 1 ? authorNameParts[authorNameParts.Length - 1] : null;
+                                object? queryResult;
 
-                                object queryResult; // Declare result here
-                                int authId;
-
-                                // Check if person already exists
-                                // Check if person already exists
-                                cmd.CommandText = "SELECT ID FROM Person WHERE First_Name = @firstName AND Middle_Name = @middleName AND Last_Name = @lastName";
-                                cmd.Parameters.AddWithValue("@firstName", firstName ?? (object)DBNull.Value);
-                                cmd.Parameters.AddWithValue("@middleName", middleName ?? (object)DBNull.Value);
-                                cmd.Parameters.AddWithValue("@lastName", lastName ?? (object)DBNull.Value);
-                                queryResult = cmd.ExecuteScalar(); // Assign to result here
-                                cmd.Parameters.Clear();
-                                if (queryResult != null && int.TryParse(queryResult.ToString(), out authId))
+                                string? isbn = dataRow[0]?.ToString()?.PadLeft(10, '0');
+                                if (string.IsNullOrEmpty(isbn))
                                 {
-                                    // If person exists, use the existing ID
+                                    isbn = lastISBN;
                                 }
                                 else
                                 {
-                                    // If person does not exist, insert it and get the new ID
-                                    cmd.CommandText = "INSERT INTO Person(First_Name, Middle_Name, Last_Name) VALUES (@firstName, @middleName, @lastName); SELECT last_insert_rowid();";
-                                    cmd.Parameters.AddWithValue("@firstName", firstName ?? (object)DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@middleName", middleName ?? (object)DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@lastName", lastName ?? (object)DBNull.Value);
-                                    queryResult = cmd.ExecuteScalar(); // Assign to result here
-                                    cmd.Parameters.Clear();
-                                    authId = Convert.ToInt32(queryResult);
-
-                                    // Insert a new author that relates to the person
-                                    cmd.CommandText = "INSERT INTO Author(Auth_ID) VALUES (@personId)";
-                                    cmd.Parameters.AddWithValue("@personId", authId);
-                                    cmd.ExecuteNonQuery();
-                                    cmd.Parameters.Clear();
+                                    lastISBN = isbn;
                                 }
 
+                                string? title = dataRow[1]?.ToString()?.Replace("'", "''");
+                                string? publisherName = dataRow[3]?.ToString()?.Replace("'", "''");
 
-                                // Check if publisher already exists
-                                cmd.CommandText = $"SELECT Pub_ID FROM Publisher WHERE pub_name = '{publisherName}'";
-                                queryResult = cmd.ExecuteScalar();
+
+                                string?[] authorNameParts = SplitName(dataRow[2]?.ToString());
+
+                                int authId;
+
+                                int personId = SelectCommands.SelectPersonId(conn, authorNameParts[0], authorNameParts[1], authorNameParts[2]);
+
+                                if (personId == -1)
+                                {
+                                    authId = InsertCommands.InsertPerson(conn, authorNameParts[0], authorNameParts[1], authorNameParts[2]);
+                                    InsertCommands.InsertAuthor(conn, authId);
+                                }
+                                else
+                                {
+                                    authId = SelectCommands.SelectAuthorId(conn, personId);
+                                }
+
+                                queryResult = SelectCommands.SelectPublisherId(conn, publisherName);
+
                                 int pubId;
                                 if (queryResult != null)
                                 {
@@ -88,48 +73,21 @@ namespace Bookstore.Data
                                 }
                                 else
                                 {
-                                    // If publisher does not exist, insert it and get the new Pub_ID
-                                    cmd.CommandText = $"INSERT INTO Publisher(pub_name) VALUES ('{publisherName}'); SELECT last_insert_rowid();";
-                                    pubId = Convert.ToInt32(cmd.ExecuteScalar());
+                                    pubId = InsertCommands.InsertPublisher(conn, publisherName);
                                 }
 
-                                // Use int.TryParse to avoid FormatException
-                                if (int.TryParse(dataRow[4].ToString(), out int year))
-                                {
-                                    Debug.WriteLine(year);
-                                }
-                                else
-                                {
-                                    Debug.WriteLine("Year is not a valid integer");
-                                    continue; // Skip this row if year is not a valid integer
-                                }
-
-                                if (double.TryParse(dataRow[5].ToString().Replace("$", ""), out double price))
-                                {
-                                    Debug.WriteLine(price);
-                                }
-                                else
-                                {
-                                    Debug.WriteLine("Price is not a valid double");
-                                    continue; // Skip this row if price is not a valid double
-                                }
-
+                                int.TryParse(dataRow[4].ToString(), out int year);
+                                double.TryParse(dataRow[5]?.ToString()?.Replace("$", ""), out double price);
                                 string? category = dataRow[6].ToString();
-                                Debug.WriteLine(category);
 
-                                // Check if book already exists
-                                cmd.CommandText = $"SELECT COUNT(*) FROM Book WHERE ISBN = '{isbn}'";
-                                int bookCount = Convert.ToInt32(cmd.ExecuteScalar());
+                                int bookCount = SelectCommands.SelectBookCount(conn, isbn);
 
-                                // If book does not exist, insert it
                                 if (bookCount == 0)
                                 {
-                                    cmd.CommandText =
-                                        $"INSERT INTO Book(ISBN ,Title ,Auth_id, Pub_Id ,Year ,Price ,Category) VALUES ('{isbn}', '{title}', '{authId}', '{pubId}', {year}, {price},'{category}')";
-                                    cmd.ExecuteNonQuery();
+                                    InsertCommands.InsertBook(conn, isbn, title, pubId, year, (decimal)price, category);
                                 }
 
-                                // Similar checks can be added for authors and publishers
+                                InsertCommands.InsertWrites(conn, isbn, authId);
                             }
                             cmd.CommandText = "COMMIT TRANSACTION;";
                             cmd.ExecuteNonQuery();
@@ -138,8 +96,73 @@ namespace Bookstore.Data
                     }
                 }
             }
-
-            Debug.WriteLine("Data imported successfully!");
         }
+
+        //private string[] SplitName(string name)
+        //{
+        //    string?[] authorNameParts = name.Split(' ');
+        //    string? firstName = authorNameParts[0].Trim().ToLower();
+        //    string? middleName = authorNameParts.Length > 2 ? authorNameParts[1].Trim().ToLower() : null;
+        //    string? lastName = authorNameParts.Length == 2 ? authorNameParts[authorNameParts.Length - 1].Trim().ToLower() : null;
+        //    return new string[] { firstName, middleName, lastName };
+        //}
+
+        //private static string[] SplitName(string name)
+        //{
+        //    string[] nameParts = name.Split(' ');
+        //    string firstName = nameParts[0].Trim().ToLower();
+        //    string lastName = nameParts[nameParts.Length - 1].Trim().ToLower();
+
+        //    string middleName = null;
+        //    if (nameParts.Length > 2)
+        //    {
+        //        // Combine all parts between the first and last name as the middle name
+        //        middleName = string.Join(" ", nameParts.Skip(1).Take(nameParts.Length - 2)).Trim().ToLower();
+        //    }
+
+        //    return new string[] { firstName, middleName, lastName };
+        //}
+
+        private static string[] SplitName(string name)
+        {
+            string[] nameParts = name.Split(' ');
+            string firstName, middleName, lastName;
+
+            if (name.Contains(','))
+            {
+                // If name contains a comma, treat the part before the comma as the last name
+                lastName = nameParts[0].Trim().ToLower();
+                firstName = nameParts[1].Trim().ToLower();
+
+                if (nameParts.Length > 3)
+                {
+                    // Combine all parts after the first and second as the middle name
+                    middleName = string.Join(" ", nameParts.Skip(2)).Trim().ToLower();
+                }
+                else
+                {
+                    middleName = null;
+                }
+            }
+            else
+            {
+                firstName = nameParts[0].Trim().ToLower();
+                lastName = nameParts[nameParts.Length - 1].Trim().ToLower();
+
+                if (nameParts.Length > 2)
+                {
+                    // Combine all parts between the first and last name as the middle name
+                    middleName = string.Join(" ", nameParts.Skip(1).Take(nameParts.Length - 2)).Trim().ToLower();
+                }
+                else
+                {
+                    middleName = null;
+                }
+            }
+
+            return new string[] { firstName, middleName, lastName };
+        }
+
+
     }
 }

@@ -6,7 +6,7 @@
         public required string ISBN { get; set; }
         public required decimal Price { get; set; }
         public required int Year { get; set; }
-        public required Author Author { get; set; }
-        public required Publisher Publisher { get; set; }
+        public required string Category { get; set; }
+        public required int PublisherId { get; set; }
     }
 }
