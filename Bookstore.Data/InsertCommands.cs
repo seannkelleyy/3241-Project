@@ -110,10 +110,21 @@ namespace Bookstore.Data
         public static void InsertMembership(int customerId, string email, string password)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO Membership (Cust_Id, Email, Password) VALUES (@custId, @email, @password);";
-            cmd.Parameters.AddWithValue("@custId", customerId);
+            cmd.CommandText = "INSERT INTO Membership (Mem_Id, Email, Password) VALUES (@memberId, @email, @password);";
+            cmd.Parameters.AddWithValue("@memberId", customerId);
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Parameters.AddWithValue("@password", password);
+            cmd.ExecuteNonQuery();
+            cmd.Parameters.Clear();
+        }
+
+        public static void InsertInventory(string isbn, int storeNumber, int quantity)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO Inventory (ISBN, Store_Id, Quantity) VALUES (@isbn, @storeNumber, @quantity);";
+            cmd.Parameters.AddWithValue("@isbn", isbn);
+            cmd.Parameters.AddWithValue("@storeNumber", storeNumber);
+            cmd.Parameters.AddWithValue("@quantity", quantity);
             cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
         }

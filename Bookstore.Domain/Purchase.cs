@@ -8,6 +8,6 @@
         public required Book Book { get; set; }
         public DateTime Purchase_Date { get; set; }
         public required Customer Customer { get; set; }
-        public required Bookstore Store { get; set; }
+        public required Store Store { get; set; }
     }
 }

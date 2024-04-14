@@ -32,7 +32,7 @@ namespace Bookstore
         {
             components = new System.ComponentModel.Container();
             labelWelcome = new Label();
-            buttonLoadExcel = new Button();
+            buttonEstablishDatabaseConnection = new Button();
             buttonBrowseFiles = new Button();
             textboxFileName = new TextBox();
             dataGridViewExcelFile = new DataGridView();
@@ -43,7 +43,7 @@ namespace Bookstore
             textBoxCustomerFirstName = new TextBox();
             textBoxCustomerMiddleName = new TextBox();
             textBoxCustomerLastName = new TextBox();
-            textBoxCustomerEmail = new TextBox();
+            textBoxMembershipEmail = new TextBox();
             textBoxMembershipPassword = new TextBox();
             textBoxCustomerPhone = new TextBox();
             buttonAddCustomer = new Button();
@@ -67,6 +67,16 @@ namespace Bookstore
             buttonInsertData = new Button();
             textBoxPurchasePrice = new TextBox();
             selectCommandsBindingSource = new BindingSource(components);
+            labelMembershipEmail = new Label();
+            labelMembershipPassword = new Label();
+            labelPurchasePrice = new Label();
+            labelPurchaseQuantity = new Label();
+            labelStoreLocation = new Label();
+            labelInventoryQuantity = new Label();
+            labelCustomerPhoneNumber = new Label();
+            labelCustomerLastName = new Label();
+            labelCustomerMiddleName = new Label();
+            labelCustomerFirstName = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExcelFile).BeginInit();
             ((System.ComponentModel.ISupportInitialize)selectCommandsBindingSource).BeginInit();
             SuspendLayout();
@@ -81,15 +91,15 @@ namespace Bookstore
             labelWelcome.TabIndex = 0;
             labelWelcome.Text = "Welcome To Bits & Books!";
             // 
-            // buttonLoadExcel
+            // buttonEstablishDatabaseConnection
             // 
-            buttonLoadExcel.Location = new Point(271, 55);
-            buttonLoadExcel.Name = "buttonLoadExcel";
-            buttonLoadExcel.Size = new Size(128, 23);
-            buttonLoadExcel.TabIndex = 1;
-            buttonLoadExcel.Text = "Establish Connection";
-            buttonLoadExcel.UseVisualStyleBackColor = true;
-            buttonLoadExcel.Click += buttonLoadExcel_Click;
+            buttonEstablishDatabaseConnection.Location = new Point(271, 55);
+            buttonEstablishDatabaseConnection.Name = "buttonEstablishDatabaseConnection";
+            buttonEstablishDatabaseConnection.Size = new Size(128, 23);
+            buttonEstablishDatabaseConnection.TabIndex = 1;
+            buttonEstablishDatabaseConnection.Text = "Establish Connection";
+            buttonEstablishDatabaseConnection.UseVisualStyleBackColor = true;
+            buttonEstablishDatabaseConnection.Click += buttonEstablishDatabaseConnection_Click;
             // 
             // buttonBrowseFiles
             // 
@@ -114,7 +124,7 @@ namespace Bookstore
             dataGridViewExcelFile.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewExcelFile.Location = new Point(12, 142);
             dataGridViewExcelFile.Name = "dataGridViewExcelFile";
-            dataGridViewExcelFile.Size = new Size(345, 260);
+            dataGridViewExcelFile.Size = new Size(385, 409);
             dataGridViewExcelFile.TabIndex = 4;
             // 
             // textboxDatabaseFile
@@ -147,7 +157,8 @@ namespace Bookstore
             // 
             labelCreateCustomer.AutoSize = true;
             labelCreateCustomer.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelCreateCustomer.Location = new Point(403, 16);
+            labelCreateCustomer.ForeColor = SystemColors.HotTrack;
+            labelCreateCustomer.Location = new Point(441, 53);
             labelCreateCustomer.Name = "labelCreateCustomer";
             labelCreateCustomer.Size = new Size(127, 21);
             labelCreateCustomer.TabIndex = 9;
@@ -155,57 +166,51 @@ namespace Bookstore
             // 
             // textBoxCustomerFirstName
             // 
-            textBoxCustomerFirstName.Location = new Point(405, 44);
+            textBoxCustomerFirstName.Location = new Point(442, 93);
             textBoxCustomerFirstName.Name = "textBoxCustomerFirstName";
-            textBoxCustomerFirstName.Size = new Size(100, 23);
+            textBoxCustomerFirstName.Size = new Size(121, 23);
             textBoxCustomerFirstName.TabIndex = 10;
-            textBoxCustomerFirstName.Text = "First Name";
             // 
             // textBoxCustomerMiddleName
             // 
-            textBoxCustomerMiddleName.Location = new Point(405, 73);
+            textBoxCustomerMiddleName.Location = new Point(441, 137);
             textBoxCustomerMiddleName.Name = "textBoxCustomerMiddleName";
-            textBoxCustomerMiddleName.Size = new Size(100, 23);
+            textBoxCustomerMiddleName.Size = new Size(121, 23);
             textBoxCustomerMiddleName.TabIndex = 11;
-            textBoxCustomerMiddleName.Text = "Middle Name";
             // 
             // textBoxCustomerLastName
             // 
-            textBoxCustomerLastName.Location = new Point(405, 102);
+            textBoxCustomerLastName.Location = new Point(442, 182);
             textBoxCustomerLastName.Name = "textBoxCustomerLastName";
-            textBoxCustomerLastName.Size = new Size(100, 23);
+            textBoxCustomerLastName.Size = new Size(121, 23);
             textBoxCustomerLastName.TabIndex = 12;
-            textBoxCustomerLastName.Text = "Last Name";
             // 
-            // textBoxCustomerEmail
+            // textBoxMembershipEmail
             // 
-            textBoxCustomerEmail.Location = new Point(406, 299);
-            textBoxCustomerEmail.Name = "textBoxCustomerEmail";
-            textBoxCustomerEmail.Size = new Size(121, 23);
-            textBoxCustomerEmail.TabIndex = 13;
-            textBoxCustomerEmail.Text = "Email";
+            textBoxMembershipEmail.Location = new Point(442, 409);
+            textBoxMembershipEmail.Name = "textBoxMembershipEmail";
+            textBoxMembershipEmail.Size = new Size(121, 23);
+            textBoxMembershipEmail.TabIndex = 13;
             // 
             // textBoxMembershipPassword
             // 
-            textBoxMembershipPassword.Location = new Point(406, 270);
+            textBoxMembershipPassword.Location = new Point(442, 456);
             textBoxMembershipPassword.Name = "textBoxMembershipPassword";
             textBoxMembershipPassword.Size = new Size(121, 23);
             textBoxMembershipPassword.TabIndex = 14;
-            textBoxMembershipPassword.Text = "Password";
             // 
             // textBoxCustomerPhone
             // 
-            textBoxCustomerPhone.Location = new Point(405, 131);
+            textBoxCustomerPhone.Location = new Point(442, 226);
             textBoxCustomerPhone.Name = "textBoxCustomerPhone";
-            textBoxCustomerPhone.Size = new Size(100, 23);
+            textBoxCustomerPhone.Size = new Size(121, 23);
             textBoxCustomerPhone.TabIndex = 15;
-            textBoxCustomerPhone.Text = "Phone Number";
             // 
             // buttonAddCustomer
             // 
-            buttonAddCustomer.Location = new Point(403, 160);
+            buttonAddCustomer.Location = new Point(433, 263);
             buttonAddCustomer.Name = "buttonAddCustomer";
-            buttonAddCustomer.Size = new Size(100, 23);
+            buttonAddCustomer.Size = new Size(138, 35);
             buttonAddCustomer.TabIndex = 16;
             buttonAddCustomer.Text = "Add Customer";
             buttonAddCustomer.UseVisualStyleBackColor = true;
@@ -215,7 +220,8 @@ namespace Bookstore
             // 
             labelAddInventory.AutoSize = true;
             labelAddInventory.Font = new Font("Segoe UI", 12F);
-            labelAddInventory.Location = new Point(536, 16);
+            labelAddInventory.ForeColor = SystemColors.Highlight;
+            labelAddInventory.Location = new Point(641, 24);
             labelAddInventory.Name = "labelAddInventory";
             labelAddInventory.Size = new Size(108, 21);
             labelAddInventory.TabIndex = 17;
@@ -224,7 +230,7 @@ namespace Bookstore
             // comboBoxInventoryBook
             // 
             comboBoxInventoryBook.FormattingEnabled = true;
-            comboBoxInventoryBook.Location = new Point(536, 42);
+            comboBoxInventoryBook.Location = new Point(641, 50);
             comboBoxInventoryBook.Name = "comboBoxInventoryBook";
             comboBoxInventoryBook.Size = new Size(121, 23);
             comboBoxInventoryBook.TabIndex = 18;
@@ -232,16 +238,15 @@ namespace Bookstore
             // 
             // textBoxInventoryQuantity
             // 
-            textBoxInventoryQuantity.Location = new Point(536, 102);
+            textBoxInventoryQuantity.Location = new Point(641, 125);
             textBoxInventoryQuantity.Name = "textBoxInventoryQuantity";
             textBoxInventoryQuantity.Size = new Size(121, 23);
             textBoxInventoryQuantity.TabIndex = 19;
-            textBoxInventoryQuantity.Text = "Quantity";
             // 
             // comboBoxInventoryBookstore
             // 
             comboBoxInventoryBookstore.FormattingEnabled = true;
-            comboBoxInventoryBookstore.Location = new Point(536, 73);
+            comboBoxInventoryBookstore.Location = new Point(641, 81);
             comboBoxInventoryBookstore.Name = "comboBoxInventoryBookstore";
             comboBoxInventoryBookstore.Size = new Size(121, 23);
             comboBoxInventoryBookstore.TabIndex = 20;
@@ -251,7 +256,8 @@ namespace Bookstore
             // 
             labelAddBookstore.AutoSize = true;
             labelAddBookstore.Font = new Font("Segoe UI", 12F);
-            labelAddBookstore.Location = new Point(670, 16);
+            labelAddBookstore.ForeColor = SystemColors.HotTrack;
+            labelAddBookstore.Location = new Point(639, 208);
             labelAddBookstore.Name = "labelAddBookstore";
             labelAddBookstore.Size = new Size(112, 21);
             labelAddBookstore.TabIndex = 21;
@@ -259,35 +265,37 @@ namespace Bookstore
             // 
             // textBoxBookstoreLocation
             // 
-            textBoxBookstoreLocation.Location = new Point(679, 42);
+            textBoxBookstoreLocation.Location = new Point(641, 247);
             textBoxBookstoreLocation.Name = "textBoxBookstoreLocation";
-            textBoxBookstoreLocation.Size = new Size(100, 23);
+            textBoxBookstoreLocation.Size = new Size(121, 23);
             textBoxBookstoreLocation.TabIndex = 22;
-            textBoxBookstoreLocation.Text = "Store Location";
             // 
             // buttonAddInventory
             // 
-            buttonAddInventory.Location = new Point(536, 130);
+            buttonAddInventory.Location = new Point(628, 154);
             buttonAddInventory.Name = "buttonAddInventory";
-            buttonAddInventory.Size = new Size(121, 23);
+            buttonAddInventory.Size = new Size(148, 35);
             buttonAddInventory.TabIndex = 23;
             buttonAddInventory.Text = "Add Inventory";
             buttonAddInventory.UseVisualStyleBackColor = true;
+            buttonAddInventory.Click += buttonAddInventory_Click;
             // 
             // buttonAddBookstore
             // 
-            buttonAddBookstore.Location = new Point(678, 70);
+            buttonAddBookstore.Location = new Point(628, 276);
             buttonAddBookstore.Name = "buttonAddBookstore";
-            buttonAddBookstore.Size = new Size(101, 23);
+            buttonAddBookstore.Size = new Size(148, 35);
             buttonAddBookstore.TabIndex = 24;
             buttonAddBookstore.Text = "Add Bookstore";
             buttonAddBookstore.UseVisualStyleBackColor = true;
+            buttonAddBookstore.Click += buttonAddBookstore_Click;
             // 
             // labelCreateMembership
             // 
             labelCreateMembership.AutoSize = true;
             labelCreateMembership.Font = new Font("Segoe UI", 12F);
-            labelCreateMembership.Location = new Point(403, 206);
+            labelCreateMembership.ForeColor = SystemColors.HotTrack;
+            labelCreateMembership.Location = new Point(433, 332);
             labelCreateMembership.Name = "labelCreateMembership";
             labelCreateMembership.Size = new Size(147, 21);
             labelCreateMembership.TabIndex = 25;
@@ -296,7 +304,7 @@ namespace Bookstore
             // comboBoxMembershipCustomer
             // 
             comboBoxMembershipCustomer.FormattingEnabled = true;
-            comboBoxMembershipCustomer.Location = new Point(406, 241);
+            comboBoxMembershipCustomer.Location = new Point(442, 365);
             comboBoxMembershipCustomer.Name = "comboBoxMembershipCustomer";
             comboBoxMembershipCustomer.Size = new Size(121, 23);
             comboBoxMembershipCustomer.TabIndex = 26;
@@ -304,18 +312,20 @@ namespace Bookstore
             // 
             // buttonCreateMembership
             // 
-            buttonCreateMembership.Location = new Point(406, 328);
+            buttonCreateMembership.Location = new Point(433, 485);
             buttonCreateMembership.Name = "buttonCreateMembership";
-            buttonCreateMembership.Size = new Size(124, 23);
+            buttonCreateMembership.Size = new Size(138, 35);
             buttonCreateMembership.TabIndex = 27;
             buttonCreateMembership.Text = "Create Membership";
             buttonCreateMembership.UseVisualStyleBackColor = true;
+            buttonCreateMembership.Click += buttonCreateMembership_Click;
             // 
             // labelCreatePurchase
             // 
             labelCreatePurchase.AutoSize = true;
             labelCreatePurchase.Font = new Font("Segoe UI", 12F);
-            labelCreatePurchase.Location = new Point(587, 206);
+            labelCreatePurchase.ForeColor = SystemColors.HotTrack;
+            labelCreatePurchase.Location = new Point(643, 332);
             labelCreatePurchase.Name = "labelCreatePurchase";
             labelCreatePurchase.Size = new Size(122, 21);
             labelCreatePurchase.TabIndex = 28;
@@ -324,7 +334,7 @@ namespace Bookstore
             // comboBoxPurchaseBookSelect
             // 
             comboBoxPurchaseBookSelect.FormattingEnabled = true;
-            comboBoxPurchaseBookSelect.Location = new Point(588, 241);
+            comboBoxPurchaseBookSelect.Location = new Point(644, 365);
             comboBoxPurchaseBookSelect.Name = "comboBoxPurchaseBookSelect";
             comboBoxPurchaseBookSelect.Size = new Size(121, 23);
             comboBoxPurchaseBookSelect.TabIndex = 29;
@@ -333,24 +343,23 @@ namespace Bookstore
             // comboBoxPurchaseStore
             // 
             comboBoxPurchaseStore.FormattingEnabled = true;
-            comboBoxPurchaseStore.Location = new Point(587, 299);
+            comboBoxPurchaseStore.Location = new Point(644, 440);
             comboBoxPurchaseStore.Name = "comboBoxPurchaseStore";
             comboBoxPurchaseStore.Size = new Size(121, 23);
             comboBoxPurchaseStore.TabIndex = 30;
-            comboBoxPurchaseStore.Text = "Select Store";
+            comboBoxPurchaseStore.Text = "Select Bookstore";
             // 
             // textBoxPurchaseQuantity
             // 
-            textBoxPurchaseQuantity.Location = new Point(587, 270);
+            textBoxPurchaseQuantity.Location = new Point(644, 412);
             textBoxPurchaseQuantity.Name = "textBoxPurchaseQuantity";
             textBoxPurchaseQuantity.Size = new Size(121, 23);
             textBoxPurchaseQuantity.TabIndex = 31;
-            textBoxPurchaseQuantity.Text = "Book Quantity";
             // 
             // comboBoxPurchaseCustomer
             // 
             comboBoxPurchaseCustomer.FormattingEnabled = true;
-            comboBoxPurchaseCustomer.Location = new Point(588, 330);
+            comboBoxPurchaseCustomer.Location = new Point(643, 469);
             comboBoxPurchaseCustomer.Name = "comboBoxPurchaseCustomer";
             comboBoxPurchaseCustomer.Size = new Size(121, 23);
             comboBoxPurchaseCustomer.TabIndex = 32;
@@ -358,9 +367,9 @@ namespace Bookstore
             // 
             // buttonPurchase
             // 
-            buttonPurchase.Location = new Point(587, 385);
+            buttonPurchase.Location = new Point(628, 542);
             buttonPurchase.Name = "buttonPurchase";
-            buttonPurchase.Size = new Size(123, 23);
+            buttonPurchase.Size = new Size(148, 35);
             buttonPurchase.TabIndex = 35;
             buttonPurchase.Text = "Purchase";
             buttonPurchase.UseVisualStyleBackColor = true;
@@ -378,21 +387,120 @@ namespace Bookstore
             // 
             // textBoxPurchasePrice
             // 
-            textBoxPurchasePrice.Location = new Point(587, 359);
+            textBoxPurchasePrice.Location = new Point(643, 513);
             textBoxPurchasePrice.Name = "textBoxPurchasePrice";
             textBoxPurchasePrice.Size = new Size(121, 23);
             textBoxPurchasePrice.TabIndex = 37;
-            textBoxPurchasePrice.Text = "Price";
             // 
             // selectCommandsBindingSource
             // 
-            selectCommandsBindingSource.DataSource = typeof(Data.SelectCommands);
+            selectCommandsBindingSource.DataSource = typeof(SelectCommands);
+            // 
+            // labelMembershipEmail
+            // 
+            labelMembershipEmail.AutoSize = true;
+            labelMembershipEmail.Location = new Point(442, 391);
+            labelMembershipEmail.Name = "labelMembershipEmail";
+            labelMembershipEmail.Size = new Size(39, 15);
+            labelMembershipEmail.TabIndex = 38;
+            labelMembershipEmail.Text = "Email:";
+            // 
+            // labelMembershipPassword
+            // 
+            labelMembershipPassword.AutoSize = true;
+            labelMembershipPassword.Location = new Point(442, 435);
+            labelMembershipPassword.Name = "labelMembershipPassword";
+            labelMembershipPassword.Size = new Size(60, 15);
+            labelMembershipPassword.TabIndex = 39;
+            labelMembershipPassword.Text = "Password:";
+            // 
+            // labelPurchasePrice
+            // 
+            labelPurchasePrice.AutoSize = true;
+            labelPurchasePrice.Location = new Point(645, 495);
+            labelPurchasePrice.Name = "labelPurchasePrice";
+            labelPurchasePrice.Size = new Size(36, 15);
+            labelPurchasePrice.TabIndex = 40;
+            labelPurchasePrice.Text = "Price:";
+            // 
+            // labelPurchaseQuantity
+            // 
+            labelPurchaseQuantity.AutoSize = true;
+            labelPurchaseQuantity.Location = new Point(643, 394);
+            labelPurchaseQuantity.Name = "labelPurchaseQuantity";
+            labelPurchaseQuantity.Size = new Size(56, 15);
+            labelPurchaseQuantity.TabIndex = 41;
+            labelPurchaseQuantity.Text = "Quantity:";
+            // 
+            // labelStoreLocation
+            // 
+            labelStoreLocation.AutoSize = true;
+            labelStoreLocation.Location = new Point(643, 229);
+            labelStoreLocation.Name = "labelStoreLocation";
+            labelStoreLocation.Size = new Size(86, 15);
+            labelStoreLocation.TabIndex = 42;
+            labelStoreLocation.Text = "Store Location:";
+            // 
+            // labelInventoryQuantity
+            // 
+            labelInventoryQuantity.AutoSize = true;
+            labelInventoryQuantity.Location = new Point(641, 107);
+            labelInventoryQuantity.Name = "labelInventoryQuantity";
+            labelInventoryQuantity.Size = new Size(56, 15);
+            labelInventoryQuantity.TabIndex = 43;
+            labelInventoryQuantity.Text = "Quantity:";
+            // 
+            // labelCustomerPhoneNumber
+            // 
+            labelCustomerPhoneNumber.AutoSize = true;
+            labelCustomerPhoneNumber.Location = new Point(442, 208);
+            labelCustomerPhoneNumber.Name = "labelCustomerPhoneNumber";
+            labelCustomerPhoneNumber.Size = new Size(91, 15);
+            labelCustomerPhoneNumber.TabIndex = 44;
+            labelCustomerPhoneNumber.Text = "Phone Number:";
+            // 
+            // labelCustomerLastName
+            // 
+            labelCustomerLastName.AutoSize = true;
+            labelCustomerLastName.Location = new Point(441, 163);
+            labelCustomerLastName.Name = "labelCustomerLastName";
+            labelCustomerLastName.Size = new Size(66, 15);
+            labelCustomerLastName.TabIndex = 45;
+            labelCustomerLastName.Text = "Last Name:";
+            // 
+            // labelCustomerMiddleName
+            // 
+            labelCustomerMiddleName.AutoSize = true;
+            labelCustomerMiddleName.Location = new Point(442, 119);
+            labelCustomerMiddleName.Name = "labelCustomerMiddleName";
+            labelCustomerMiddleName.Size = new Size(137, 15);
+            labelCustomerMiddleName.TabIndex = 46;
+            labelCustomerMiddleName.Text = "Middle Name (optional):";
+            // 
+            // labelCustomerFirstName
+            // 
+            labelCustomerFirstName.AutoSize = true;
+            labelCustomerFirstName.Location = new Point(441, 75);
+            labelCustomerFirstName.Name = "labelCustomerFirstName";
+            labelCustomerFirstName.Size = new Size(67, 15);
+            labelCustomerFirstName.TabIndex = 47;
+            labelCustomerFirstName.Text = "First Name:";
             // 
             // BookstoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(794, 417);
+            ClientSize = new Size(805, 588);
+            Controls.Add(labelCustomerFirstName);
+            Controls.Add(labelCustomerMiddleName);
+            Controls.Add(labelCustomerLastName);
+            Controls.Add(labelCustomerPhoneNumber);
+            Controls.Add(labelInventoryQuantity);
+            Controls.Add(labelStoreLocation);
+            Controls.Add(labelPurchaseQuantity);
+            Controls.Add(labelPurchasePrice);
+            Controls.Add(labelMembershipPassword);
+            Controls.Add(labelMembershipEmail);
             Controls.Add(textBoxPurchasePrice);
             Controls.Add(buttonInsertData);
             Controls.Add(buttonPurchase);
@@ -415,7 +523,7 @@ namespace Bookstore
             Controls.Add(buttonAddCustomer);
             Controls.Add(textBoxCustomerPhone);
             Controls.Add(textBoxMembershipPassword);
-            Controls.Add(textBoxCustomerEmail);
+            Controls.Add(textBoxMembershipEmail);
             Controls.Add(textBoxCustomerLastName);
             Controls.Add(textBoxCustomerMiddleName);
             Controls.Add(textBoxCustomerFirstName);
@@ -426,7 +534,7 @@ namespace Bookstore
             Controls.Add(dataGridViewExcelFile);
             Controls.Add(textboxFileName);
             Controls.Add(buttonBrowseFiles);
-            Controls.Add(buttonLoadExcel);
+            Controls.Add(buttonEstablishDatabaseConnection);
             Controls.Add(labelWelcome);
             Name = "BookstoreForm";
             Text = "Bits & Books";
@@ -439,7 +547,7 @@ namespace Bookstore
         #endregion
 
         private Label labelWelcome;
-        private Button buttonLoadExcel;
+        private Button buttonEstablishDatabaseConnection;
         private Button buttonBrowseFiles;
         private TextBox textboxFileName;
         public DataGridView dataGridViewExcelFile;
@@ -450,7 +558,7 @@ namespace Bookstore
         private TextBox textBoxCustomerFirstName;
         private TextBox textBoxCustomerMiddleName;
         private TextBox textBoxCustomerLastName;
-        private TextBox textBoxCustomerEmail;
+        private TextBox textBoxMembershipEmail;
         private TextBox textBoxMembershipPassword;
         private TextBox textBoxCustomerPhone;
         private Button buttonAddCustomer;
@@ -474,5 +582,15 @@ namespace Bookstore
         private Button buttonInsertData;
         private TextBox textBoxPurchasePrice;
         private BindingSource selectCommandsBindingSource;
+        private Label labelMembershipEmail;
+        private Label labelMembershipPassword;
+        private Label labelPurchasePrice;
+        private Label labelPurchaseQuantity;
+        private Label labelStoreLocation;
+        private Label labelInventoryQuantity;
+        private Label labelCustomerPhoneNumber;
+        private Label labelCustomerLastName;
+        private Label labelCustomerMiddleName;
+        private Label labelCustomerFirstName;
     }
 }

@@ -5,6 +5,7 @@ namespace Bookstore.Data
 {
     public class SelectCommands
     {
+        // Person
         public static int SelectPersonId(string firstName, string? middleName, string lastName)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -49,6 +50,8 @@ namespace Bookstore.Data
             };
         }
 
+        // Publisher
+
         public static int SelectPublisherId(string name)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -69,6 +72,8 @@ namespace Bookstore.Data
             };
         }
 
+        // Author
+
         public static int SelectAuthorId(int authId)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -77,6 +82,8 @@ namespace Bookstore.Data
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
 
+
+        // Books
         public static Book SelectBookId(string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -108,6 +115,30 @@ namespace Bookstore.Data
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
 
+        public static List<Book> SelectBooks()
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Book WHERE ISBN > 0;";
+            cmd.ExecuteScalar();
+            SqliteDataReader reader = cmd.ExecuteReader();
+            List<Book> books = new List<Book>();
+            while (reader.Read())
+            {
+                books.Add(new Book()
+                {
+                    ISBN = reader["ISBN"].ToString(),
+                    Title = reader["Title"].ToString(),
+                    PublisherId = Convert.ToInt32(reader["Pub_Id"]),
+                    Year = Convert.ToInt32(reader["Year"]),
+                    Price = Convert.ToDecimal(reader["Price"]),
+                    Category = reader["Category"].ToString()
+                });
+            }
+            return books;
+        }
+
+        // Writes
+
         public static int SelectWritesId(string isbn, int authId)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -117,6 +148,8 @@ namespace Bookstore.Data
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
 
+
+        // Customer
         public static int SelectCustomerId(string phoneNumber)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -154,6 +187,34 @@ namespace Bookstore.Data
                 });
             }
             return customers;
+        }
+
+        // Membership
+        public static int SelectMembershipId(int custId)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Mem_Id FROM Membership WHERE Mem_Id = @custId";
+            cmd.Parameters.AddWithValue("@custId", custId);
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        // Bookstore
+        public static List<Store> SelectBookstores()
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Bookstore WHERE Store_Id > 0;";
+            cmd.ExecuteScalar();
+            SqliteDataReader reader = cmd.ExecuteReader();
+            List<Store> bookstores = new List<Store>();
+            while (reader.Read())
+            {
+                bookstores.Add(new Store()
+                {
+                    Store_No = Convert.ToInt32(reader["Store_Id"]),
+                    Store_Loc = reader["Store_Loc"].ToString()
+                });
+            }
+            return bookstores;
         }
     }
 }
