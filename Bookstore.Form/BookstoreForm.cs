@@ -8,6 +8,13 @@ namespace Bookstore
         public BookstoreForm()
         {
             InitializeComponent();
+            this.FormClosing += MainForm_FormClosing;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Call CloseConnection when the form is closing
+            DatabaseConnection.CloseConnection();
         }
 
         private void buttonBrowseDatabase_Click(object sender, EventArgs e)
@@ -42,13 +49,6 @@ namespace Bookstore
 
         private void buttonLoadExcel_Click(object sender, EventArgs e)
         {
-            SQLitePCL.Batteries.Init();
-            if (textboxFileName.Text == "")
-            {
-                MessageBox.Show("Please select an excel file to load.");
-                return;
-            }
-
             if (textboxDatabaseFile.Text == "")
             {
                 MessageBox.Show("Please select database file to load.");
@@ -56,16 +56,51 @@ namespace Bookstore
             }
             //try
             //{
-            LoadData.LoadExcelData(textboxFileName.Text, textboxDatabaseFile.Text);
-            labelSuccessParsingExcel.Text = "Data has been loaded successfully!";
+            DatabaseConnection.OpenConnection(textboxDatabaseFile.Text);
+            comboBoxMembershipCustomer.Items.AddRange(SelectCommands.SelectCustomers().ToArray());
+            MessageBox.Show("Database connection has been established successfully!");
             //}
             //catch (Exception)
             //{
-            //    MessageBox.Show("An error occurred while loading the data. Please try again.");
-            //    labelSuccessParsingExcel.Text = "Data failed to load. Please try again.";
+            //    MessageBox.Show("An error occurred while establishing database connection. Please try again.");
             //}
 
         }
 
+        private void buttonAddCustomer_Click(object sender, EventArgs e)
+        {
+            InsertCommands.InsertCustomer(textBoxCustomerFirstName.Text, textBoxCustomerMiddleName?.Text, textBoxCustomerLastName.Text, textBoxCustomerPhone.Text);
+            MessageBox.Show("Customer has been added successfully!");
+        }
+
+        private void buttonInsertData_Click(object sender, EventArgs e)
+        {
+            if (textboxFileName.Text == "")
+            {
+                MessageBox.Show("Please select an excel file to load.");
+                return;
+            }
+            try
+            {
+                LoadData.LoadExcelData(textboxFileName.Text);
+                MessageBox.Show("Data has been loaded successfully!");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred while loading data. Please try again.");
+            }
+        }
+
+        private void buttonPurchase_Click(object sender, EventArgs e)
+        {
+            InsertCommands.InsertPurchase(Convert.ToInt32(
+                comboBoxPurchaseCustomer.SelectedValue.ToString()),
+                comboBoxPurchaseBookSelect.SelectedValue.ToString(),
+                Convert.ToInt32(textBoxPurchaseQuantity.Text),
+                Convert.ToInt32(comboBoxPurchaseStore.SelectedValue),
+                Convert.ToDecimal(textBoxPurchasePrice.Text)
+                );
+            MessageBox.Show("Purchase has been added successfully!");
+        }
     }
 }

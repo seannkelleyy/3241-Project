@@ -7,92 +7,87 @@ namespace Bookstore.Data
 {
     public class LoadData
     {
-        public static void LoadExcelData(string pathToExcelFile, string pathToDatabase)
+        public static void LoadExcelData(string pathToExcelFile)
         {
             using (var stream = File.Open(pathToExcelFile, FileMode.Open, FileAccess.Read))
             {
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
+                    SqliteConnection conn = DatabaseConnection.conn;
+
                     var result = reader.AsDataSet();
                     DataTable dt = result.Tables[0];
 
-                    using (SqliteConnection conn = new SqliteConnection($"Data Source={pathToDatabase};"))
+
+                    using (SqliteCommand cmd = conn.CreateCommand())
                     {
-                        conn.Open();
+                        string? lastISBN = "";
+                        DatabaseConnection.BeginTransaction();
 
-                        using (SqliteCommand cmd = conn.CreateCommand())
+                        for (int row = 2; row < dt.Rows.Count; row++) // Start from index 3 to skip the first two rows that contain headers
                         {
-                            string? lastISBN = "";
-                            cmd.CommandText = "BEGIN TRANSACTION;";
-                            cmd.ExecuteNonQuery();
+                            DataRow dataRow = dt.Rows[row];
+                            Debug.WriteLine($"Processing row {row}...");
 
-                            for (int row = 2; row < dt.Rows.Count; row++) // Start from index 3 to skip the first two rows that contain headers
+                            object? queryResult;
+
+                            string? isbn = dataRow[0]?.ToString()?.PadLeft(10, '0');
+                            if (string.IsNullOrEmpty(isbn))
                             {
-                                DataRow dataRow = dt.Rows[row];
-                                Debug.WriteLine($"Processing row {row}...");
-
-                                object? queryResult;
-
-                                string? isbn = dataRow[0]?.ToString()?.PadLeft(10, '0');
-                                if (string.IsNullOrEmpty(isbn))
-                                {
-                                    isbn = lastISBN;
-                                }
-                                else
-                                {
-                                    lastISBN = isbn;
-                                }
-
-                                string? title = dataRow[1]?.ToString()?.Replace("'", "''");
-                                string? publisherName = dataRow[3]?.ToString()?.Replace("'", "''");
-
-
-                                string?[] authorNameParts = SplitName(dataRow[2]?.ToString());
-
-                                int authId;
-
-                                int personId = SelectCommands.SelectPersonId(conn, authorNameParts[0], authorNameParts[1], authorNameParts[2]);
-
-                                if (personId == -1)
-                                {
-                                    authId = InsertCommands.InsertPerson(conn, authorNameParts[0], authorNameParts[1], authorNameParts[2]);
-                                    InsertCommands.InsertAuthor(conn, authId);
-                                }
-                                else
-                                {
-                                    authId = SelectCommands.SelectAuthorId(conn, personId);
-                                }
-
-                                queryResult = SelectCommands.SelectPublisherId(conn, publisherName);
-
-                                int pubId;
-                                if (queryResult != null)
-                                {
-                                    pubId = Convert.ToInt32(queryResult);
-                                }
-                                else
-                                {
-                                    pubId = InsertCommands.InsertPublisher(conn, publisherName);
-                                }
-
-                                int.TryParse(dataRow[4].ToString(), out int year);
-                                double.TryParse(dataRow[5]?.ToString()?.Replace("$", ""), out double price);
-                                string? category = dataRow[6].ToString();
-
-                                int bookCount = SelectCommands.SelectBookCount(conn, isbn);
-
-                                if (bookCount == 0)
-                                {
-                                    InsertCommands.InsertBook(conn, isbn, title, pubId, year, (decimal)price, category);
-                                }
-
-                                InsertCommands.InsertWrites(conn, isbn, authId);
+                                isbn = lastISBN;
                             }
-                            cmd.CommandText = "COMMIT TRANSACTION;";
-                            cmd.ExecuteNonQuery();
+                            else
+                            {
+                                lastISBN = isbn;
+                            }
+
+                            string? title = dataRow[1]?.ToString()?.Replace("'", "''");
+                            string? publisherName = dataRow[3]?.ToString()?.Replace("'", "''");
+
+
+                            string?[] authorNameParts = SplitName(dataRow[2]?.ToString());
+
+                            int authId;
+
+                            int personId = SelectCommands.SelectPersonId(authorNameParts[0], authorNameParts[1], authorNameParts[2]);
+
+                            if (personId == -1)
+                            {
+                                authId = InsertCommands.InsertPerson(authorNameParts[0], authorNameParts[1], authorNameParts[2]);
+                                InsertCommands.InsertAuthor(authId);
+                            }
+                            else
+                            {
+                                authId = SelectCommands.SelectAuthorId(personId);
+                            }
+
+                            queryResult = SelectCommands.SelectPublisherId(publisherName);
+
+                            int pubId;
+                            if (queryResult != null)
+                            {
+                                pubId = Convert.ToInt32(queryResult);
+                            }
+                            else
+                            {
+                                pubId = InsertCommands.InsertPublisher(publisherName);
+                            }
+
+                            int.TryParse(dataRow[4].ToString(), out int year);
+                            double.TryParse(dataRow[5]?.ToString()?.Replace("$", ""), out double price);
+                            string? category = dataRow[6].ToString();
+
+                            int bookCount = SelectCommands.SelectBookCount(isbn);
+
+                            if (bookCount == 0)
+                            {
+                                InsertCommands.InsertBook(isbn, title, pubId, year, (decimal)price, category);
+                            }
+
+                            InsertCommands.InsertWrites(isbn, authId);
                         }
-                        conn.Close();
+                        DatabaseConnection.EndTransaction();
                     }
                 }
             }
