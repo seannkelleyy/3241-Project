@@ -1,4 +1,5 @@
-﻿using ExcelDataReader;
+﻿using Bookstore.Domain;
+using ExcelDataReader;
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Diagnostics;
@@ -44,7 +45,6 @@ namespace Bookstore.Data
 
                             string? title = dataRow[1]?.ToString()?.Replace("'", "''");
                             string? publisherName = dataRow[3]?.ToString()?.Replace("'", "''");
-
 
                             string?[] authorNameParts = SplitName(dataRow[2]?.ToString());
 
@@ -93,31 +93,6 @@ namespace Bookstore.Data
             }
         }
 
-        //private string[] SplitName(string name)
-        //{
-        //    string?[] authorNameParts = name.Split(' ');
-        //    string? firstName = authorNameParts[0].Trim().ToLower();
-        //    string? middleName = authorNameParts.Length > 2 ? authorNameParts[1].Trim().ToLower() : null;
-        //    string? lastName = authorNameParts.Length == 2 ? authorNameParts[authorNameParts.Length - 1].Trim().ToLower() : null;
-        //    return new string[] { firstName, middleName, lastName };
-        //}
-
-        //private static string[] SplitName(string name)
-        //{
-        //    string[] nameParts = name.Split(' ');
-        //    string firstName = nameParts[0].Trim().ToLower();
-        //    string lastName = nameParts[nameParts.Length - 1].Trim().ToLower();
-
-        //    string middleName = null;
-        //    if (nameParts.Length > 2)
-        //    {
-        //        // Combine all parts between the first and last name as the middle name
-        //        middleName = string.Join(" ", nameParts.Skip(1).Take(nameParts.Length - 2)).Trim().ToLower();
-        //    }
-
-        //    return new string[] { firstName, middleName, lastName };
-        //}
-
         private static string[] SplitName(string name)
         {
             string[] nameParts = name.Split(' ');
@@ -155,9 +130,54 @@ namespace Bookstore.Data
                 }
             }
 
+            // Check if the last name is actually a suffix (e.g., Jr., Sr., III, etc.)
+            string[] suffixes = { "jr", "sr", "ii", "iii", "iv", "v" };
+            if (suffixes.Contains(lastName))
+            {
+                // If the last name is a suffix, shift the names
+                lastName = middleName;
+                middleName = firstName;
+                firstName = null;
+            }
+
+            // Check for duplicates
+            if (firstName == lastName)
+            {
+                lastName = null;
+            }
+
+            // Check if the middle name is actually a last name
+            if (middleName != null && lastName == null)
+            {
+                lastName = middleName;
+                middleName = null;
+            }
+
             return new string[] { firstName, middleName, lastName };
         }
 
+        public static void CleanUpNames()
+        {
+            List<Person> people = SelectCommands.SelectAllPeople();
+
+            foreach (var person in people)
+            {
+                // If the last name is null and the middle name is not, move the middle name to the last name
+                if (person.Last_Name == null && person.Middle_Name != null)
+                {
+                    var updateCmd = DatabaseConnection.conn.CreateCommand();
+                    updateCmd.CommandText = $"UPDATE Person SET Middle_Name = NULL, Last_Name = '{person.Middle_Name}' WHERE Id = {person.Id}";
+                    updateCmd.ExecuteNonQuery();
+                }
+
+                // If there's another person with the same first name and this person's middle name as the last name, delete this person
+                if (people.Any(p => p.First_Name == person.First_Name && p.Last_Name == person.Middle_Name))
+                {
+                    DeleteCommands.DeleteAuthor(person.Id);
+                    DeleteCommands.DeletePersonId(person.Id);
+                }
+            }
+        }
 
     }
 }

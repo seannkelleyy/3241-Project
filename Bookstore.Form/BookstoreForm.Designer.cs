@@ -77,6 +77,7 @@ namespace Bookstore
             labelCustomerLastName = new Label();
             labelCustomerMiddleName = new Label();
             labelCustomerFirstName = new Label();
+            buttonDeleteAll = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExcelFile).BeginInit();
             ((System.ComponentModel.ISupportInitialize)selectCommandsBindingSource).BeginInit();
             SuspendLayout();
@@ -486,11 +487,22 @@ namespace Bookstore
             labelCustomerFirstName.TabIndex = 47;
             labelCustomerFirstName.Text = "First Name:";
             // 
+            // buttonDeleteAll
+            // 
+            buttonDeleteAll.Location = new Point(443, 16);
+            buttonDeleteAll.Name = "buttonDeleteAll";
+            buttonDeleteAll.Size = new Size(128, 23);
+            buttonDeleteAll.TabIndex = 48;
+            buttonDeleteAll.Text = "Delete All Data";
+            buttonDeleteAll.UseVisualStyleBackColor = true;
+            buttonDeleteAll.Click += buttonDeleteAll_Click;
+            // 
             // BookstoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(805, 588);
+            Controls.Add(buttonDeleteAll);
             Controls.Add(labelCustomerFirstName);
             Controls.Add(labelCustomerMiddleName);
             Controls.Add(labelCustomerLastName);
@@ -592,5 +604,6 @@ namespace Bookstore
         private Label labelCustomerLastName;
         private Label labelCustomerMiddleName;
         private Label labelCustomerFirstName;
+        private Button buttonDeleteAll;
     }
 }

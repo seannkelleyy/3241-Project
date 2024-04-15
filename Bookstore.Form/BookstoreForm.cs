@@ -93,6 +93,16 @@ namespace Bookstore
         #region buttonClickEvents
         private void buttonAddCustomer_Click(object sender, EventArgs e)
         {
+            if (textBoxCustomerFirstName.Text == "" || textBoxCustomerLastName.Text == "" || textBoxCustomerPhone.Text == "")
+            {
+                MessageBox.Show("Please fill in all the fields.");
+                return;
+            }
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
             try
             {
                 InsertCommands.InsertCustomer(textBoxCustomerFirstName.Text, textBoxCustomerMiddleName?.Text, textBoxCustomerLastName.Text, textBoxCustomerPhone.Text);
@@ -112,6 +122,16 @@ namespace Bookstore
 
         private void buttonPurchase_Click(object sender, EventArgs e)
         {
+            if (textBoxPurchaseQuantity.Text == "" || textBoxPurchasePrice.Text == "" || comboBoxPurchaseBookSelect.SelectedIndex == -1 || comboBoxPurchaseCustomer.SelectedIndex == -1 || comboBoxPurchaseStore.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please fill in all the fields.");
+                return;
+            }
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
             try
             {
                 InsertCommands.InsertPurchase(Convert.ToInt32(
@@ -137,6 +157,16 @@ namespace Bookstore
 
         private void buttonCreateMembership_Click(object sender, EventArgs e)
         {
+            if (textBoxMembershipEmail.Text == "" || textBoxMembershipPassword.Text == "" || comboBoxMembershipCustomer.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please fill in all the fields.");
+                return;
+            }
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
             try
             {
                 InsertCommands.InsertMembership(Convert.ToInt32(comboBoxMembershipCustomer.SelectedValue.ToString()), textBoxMembershipEmail.Text, textBoxMembershipPassword.Text);
@@ -154,6 +184,16 @@ namespace Bookstore
 
         private void buttonAddBookstore_Click(object sender, EventArgs e)
         {
+            if (textBoxBookstoreLocation.Text == "")
+            {
+                MessageBox.Show("Please fill in all the fields.");
+                return;
+            }
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
             try
             {
                 InsertCommands.InsertBookstore(textBoxBookstoreLocation.Text);
@@ -169,6 +209,16 @@ namespace Bookstore
 
         private void buttonAddInventory_Click(object sender, EventArgs e)
         {
+            if (textBoxInventoryQuantity.Text == "" || comboBoxInventoryBook.SelectedIndex == -1 || comboBoxInventoryBookstore.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please fill in all the fields.");
+                return;
+            }
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
             try
             {
                 InsertCommands.InsertInventory(comboBoxInventoryBook.SelectedValue.ToString(), Convert.ToInt32(comboBoxInventoryBookstore.SelectedValue), Convert.ToInt32(textBoxInventoryQuantity.Text));
@@ -191,13 +241,13 @@ namespace Bookstore
         {
             List<Customer> membershipCustomers = SelectCommands.SelectCustomers();
             comboBoxMembershipCustomer.DataSource = membershipCustomers;
-            comboBoxMembershipCustomer.DisplayMember = "First_Name";
+            comboBoxMembershipCustomer.DisplayMember = "FullName";
             comboBoxMembershipCustomer.ValueMember = "Cust_Id";
             comboBoxMembershipCustomer.SelectedIndex = -1;
             comboBoxMembershipCustomer.SelectedText = "Select Customer";
             List<Customer> purchaseCustomers = SelectCommands.SelectCustomers();
             comboBoxPurchaseCustomer.DataSource = purchaseCustomers;
-            comboBoxPurchaseCustomer.DisplayMember = "First_Name";
+            comboBoxPurchaseCustomer.DisplayMember = "FullName";
             comboBoxPurchaseCustomer.ValueMember = "Cust_Id";
             comboBoxPurchaseCustomer.SelectedIndex = -1;
             comboBoxPurchaseCustomer.SelectedText = "Select Customer";
@@ -227,5 +277,24 @@ namespace Bookstore
             comboBoxInventoryBookstore.SelectedText = "Select Store";
         }
         #endregion load data
+
+        private void buttonDeleteAll_Click(object sender, EventArgs e)
+        {
+            if (DatabaseConnection.conn == null)
+            {
+                MessageBox.Show("Please establish database connection first.");
+                return;
+            }
+            try
+            {
+                DeleteCommands.DeleteAllData();
+                MessageBox.Show("All data has been deleted successfully!");
+                LoadComboBoxData();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred while deleting data. Please try again.");
+            }
+        }
     }
 }

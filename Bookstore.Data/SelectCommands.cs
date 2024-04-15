@@ -50,6 +50,26 @@ namespace Bookstore.Data
             };
         }
 
+        public static List<Person> SelectAllPeople()
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Person WHERE Id > 0;";
+            cmd.ExecuteScalar();
+            SqliteDataReader reader = cmd.ExecuteReader();
+            List<Person> people = new List<Person>();
+            while (reader.Read())
+            {
+                people.Add(new Person()
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    First_Name = reader["First_Name"].ToString(),
+                    Middle_Name = reader["Middle_Name"].ToString(),
+                    Last_Name = reader["Last_Name"].ToString()
+                });
+            }
+            return people;
+        }
+
         // Publisher
 
         public static int SelectPublisherId(string name)
@@ -183,7 +203,7 @@ namespace Bookstore.Data
                     Phone_No = Convert.ToInt64(reader["Phone_No"]),
                     First_Name = person.First_Name,
                     Middle_Name = person.Middle_Name,
-                    Last_Name = person.Last_Name
+                    Last_Name = person.Last_Name,
                 });
             }
             return customers;
