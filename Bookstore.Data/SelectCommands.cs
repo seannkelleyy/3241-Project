@@ -77,7 +77,12 @@ namespace Bookstore.Data
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Pub_Id FROM Publisher WHERE lower(trim(Pub_Name)) = @name";
             cmd.Parameters.AddWithValue("@name", name.ToLower());
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
 
         public static Publisher SelectPublisher(int id)
@@ -99,12 +104,17 @@ namespace Bookstore.Data
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Auth_Id FROM Author WHERE Auth_Id = @authId";
             cmd.Parameters.AddWithValue("@authId", authId);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
 
 
         // Books
-        public static Book SelectBookId(string isbn)
+        public static Book SelectBookById(string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT ISBN, Title, Pub_Id, Year, Price, Category FROM Book WHERE ISBN = @isbn";
@@ -127,12 +137,17 @@ namespace Bookstore.Data
             };
         }
 
-        public static int SelectBookPrice(string isbn)
+        public static decimal SelectBookPrice(string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Price FROM Book WHERE ISBN = @isbn";
             cmd.Parameters.AddWithValue("@isbn", isbn);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            decimal price = Convert.ToDecimal(cmd.ExecuteScalar());
+            if (price == 0)
+            {
+                return -1;
+            }
+            return price;
         }
 
         public static int SelectBookCount(string isbn)
@@ -140,7 +155,12 @@ namespace Bookstore.Data
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT COUNT(*) FROM Book WHERE ISBN = @isbn";
             cmd.Parameters.AddWithValue("@isbn", isbn);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            if (count == 0)
+            {
+                return -1;
+            }
+            return count;
         }
 
         public static List<Book> SelectBooks()
@@ -165,6 +185,17 @@ namespace Bookstore.Data
             return books;
         }
 
+        public static string SelectRandomBook()
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT ISBN FROM Book ORDER BY RANDOM() LIMIT 1;";
+            if (cmd.ExecuteScalar() == null)
+            {
+                return null;
+            }
+            return cmd.ExecuteScalar().ToString();
+        }
+
         // Writes
 
         public static int SelectWritesId(string isbn, int authId)
@@ -173,12 +204,17 @@ namespace Bookstore.Data
             cmd.CommandText = "SELECT Auth_ID FROM Writes WHERE ISBN = @isbn AND Auth_Id = @authId";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@authId", authId);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
 
 
         // Customer
-        public static int SelectCustomerId(string phoneNumber)
+        public static int SelectCustomerByPhone(string phoneNumber)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Cust_Id FROM Customer WHERE Phone_No = @phoneNumber";
@@ -192,6 +228,34 @@ namespace Bookstore.Data
             {
                 return Convert.ToInt32(result);
             }
+        }
+
+        public static int SelectCustomerById(int id)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Cust_Id FROM Customer WHERE Cust_Id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            object? result = cmd.ExecuteScalar();
+            if (result == null)
+            {
+                return -1;
+            }
+            else
+            {
+                return Convert.ToInt32(result);
+            }
+        }
+
+        public static int SelectRandomCustomerId()
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Cust_Id FROM Customer ORDER BY RANDOM() LIMIT 1;";
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
 
         public static List<Customer> SelectCustomers()
@@ -223,7 +287,12 @@ namespace Bookstore.Data
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Mem_Id FROM Membership WHERE Mem_Id = @custId";
             cmd.Parameters.AddWithValue("@custId", custId);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
 
         // Bookstore
@@ -245,13 +314,31 @@ namespace Bookstore.Data
             return bookstores;
         }
 
+        public static int SelectBookstoreId(string storeLoc)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Store_Id FROM Bookstore WHERE lower(trim(Store_Loc)) = @storeLoc";
+            cmd.Parameters.AddWithValue("@storeLoc", storeLoc.ToLower());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
+        }
+
         public static int SelectInventory(int storeNum, string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "SELECT Quantity FROM Stores WHERE ISBN = @isbn AND Store_Id = @storeNum";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@storeNum", storeNum);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            if (count == 0)
+            {
+                return -1;
+            }
+            return count;
         }
 
         // Purchase
@@ -262,7 +349,12 @@ namespace Bookstore.Data
             cmd.Parameters.AddWithValue("@custId", custId);
             cmd.Parameters.AddWithValue("@storeNumber", storeNumber);
             cmd.Parameters.AddWithValue("@price", price);
-            return Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            if (id == 0)
+            {
+                return -1;
+            }
+            return id;
         }
     }
 }

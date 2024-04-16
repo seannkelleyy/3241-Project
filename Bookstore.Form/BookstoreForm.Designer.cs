@@ -78,6 +78,7 @@ namespace Bookstore
             labelCustomerFirstName = new Label();
             buttonDeleteAll = new Button();
             labelPurchasePriceText = new Label();
+            buttonAddRandomData = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExcelFile).BeginInit();
             ((System.ComponentModel.ISupportInitialize)selectCommandsBindingSource).BeginInit();
             SuspendLayout();
@@ -500,11 +501,22 @@ namespace Bookstore
             labelPurchasePriceText.Size = new Size(0, 15);
             labelPurchasePriceText.TabIndex = 49;
             // 
+            // buttonAddRandomData
+            // 
+            buttonAddRandomData.Location = new Point(298, 16);
+            buttonAddRandomData.Name = "buttonAddRandomData";
+            buttonAddRandomData.Size = new Size(128, 22);
+            buttonAddRandomData.TabIndex = 50;
+            buttonAddRandomData.Text = "Add Random Data";
+            buttonAddRandomData.UseVisualStyleBackColor = true;
+            buttonAddRandomData.Click += buttonAddRandomData_Click;
+            // 
             // BookstoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(805, 588);
+            Controls.Add(buttonAddRandomData);
             Controls.Add(labelPurchasePriceText);
             Controls.Add(buttonDeleteAll);
             Controls.Add(labelCustomerFirstName);
@@ -625,5 +637,6 @@ namespace Bookstore
         private Label labelCustomerFirstName;
         private Button buttonDeleteAll;
         private Label labelPurchasePriceText;
+        private Button buttonAddRandomData;
     }
 }

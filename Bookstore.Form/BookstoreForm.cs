@@ -67,7 +67,6 @@ namespace Bookstore
             {
                 MessageBox.Show("An error occurred while establishing database connection. Please try again.");
             }
-
         }
 
         private void buttonInsertData_Click(object sender, EventArgs e)
@@ -137,28 +136,28 @@ namespace Bookstore
                 MessageBox.Show("Not enough inventory in the selected store. Please select a different store or reduce the quantity.");
                 return;
             }
-            //try
-            //{
-            InsertCommands.InsertPurchase(Convert.ToInt32(
+            try
+            {
+                InsertCommands.InsertPurchase(Convert.ToInt32(
                 comboBoxPurchaseCustomer.SelectedValue.ToString()),
                 comboBoxPurchaseBookSelect.SelectedValue.ToString(),
                 Convert.ToInt32(textBoxPurchaseQuantity.Text),
                 Convert.ToInt32(comboBoxPurchaseStore.SelectedValue),
                 Convert.ToDecimal(labelPurchasePriceText.Text)
                 );
-            MessageBox.Show("Purchase has been added successfully!");
-            UpdateCommands.UpdateInventory(comboBoxPurchaseBookSelect.SelectedValue.ToString(), Convert.ToInt32(textBoxPurchaseQuantity.Text), Convert.ToInt32(comboBoxPurchaseStore.SelectedValue));
-            textBoxPurchaseQuantity.Text = "";
-            labelPurchasePriceText.Text = "";
-            comboBoxPurchaseBookSelect.SelectedIndex = -1;
-            comboBoxPurchaseStore.SelectedIndex = -1;
-            comboBoxPurchaseCustomer.SelectedIndex = -1;
-            LoadComboBoxData();
-            //}
-            //catch (Exception)
-            //{
-            //    MessageBox.Show("An error occurred while adding purchase. Please try again.");
-            //}
+                MessageBox.Show("Purchase has been added successfully!");
+                UpdateCommands.UpdateInventory(comboBoxPurchaseBookSelect.SelectedValue.ToString(), Convert.ToInt32(textBoxPurchaseQuantity.Text), Convert.ToInt32(comboBoxPurchaseStore.SelectedValue));
+                textBoxPurchaseQuantity.Text = "";
+                labelPurchasePriceText.Text = "";
+                comboBoxPurchaseBookSelect.SelectedIndex = -1;
+                comboBoxPurchaseStore.SelectedIndex = -1;
+                comboBoxPurchaseCustomer.SelectedIndex = -1;
+                LoadComboBoxData();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred while adding purchase. Please try again.");
+            }
         }
 
         private void buttonCreateMembership_Click(object sender, EventArgs e)
@@ -302,6 +301,19 @@ namespace Bookstore
             catch (Exception)
             {
                 MessageBox.Show("An error occurred while deleting data. Please try again.");
+            }
+        }
+
+        private void buttonAddRandomData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                InsertCommands.InsertTestData();
+                MessageBox.Show("Test data has been added successfully!");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred while adding test data. Please try again.");
             }
         }
     }

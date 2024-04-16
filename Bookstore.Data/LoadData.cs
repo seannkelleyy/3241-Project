@@ -84,7 +84,10 @@ namespace Bookstore.Data
                                 InsertCommands.InsertBook(isbn, title, pubId, year, (decimal)price, category);
                             }
 
-                            InsertCommands.InsertWrites(isbn, authId);
+                            if (SelectCommands.SelectWritesId(isbn, authId) == -1)
+                            {
+                                InsertCommands.InsertWrites(isbn, authId);
+                            }
                         }
                         DatabaseConnection.EndTransaction();
                     }

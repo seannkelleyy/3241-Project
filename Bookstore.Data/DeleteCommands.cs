@@ -7,7 +7,7 @@ namespace Bookstore.Data
         public static void DeleteAllData()
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "delete from writes; delete from Purchase; delete from Author; delete from Membership; delete from Customer; delete from Person; delete from publisher; delete from stores; delete from Bookstore; delete from book;";
+            cmd.CommandText = "delete from writes; delete from books; delete from Purchase; delete from Author; delete from Membership; delete from Customer; delete from Person; delete from publisher; delete from stores; delete from Bookstore; delete from book;";
             cmd.ExecuteNonQuery();
         }
         public static void DeleteBook(string isbn)
