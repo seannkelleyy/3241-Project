@@ -122,7 +122,7 @@ namespace Bookstore
 
         private void buttonPurchase_Click(object sender, EventArgs e)
         {
-            if (textBoxPurchaseQuantity.Text == "" || textBoxPurchasePrice.Text == "" || comboBoxPurchaseBookSelect.SelectedIndex == -1 || comboBoxPurchaseCustomer.SelectedIndex == -1 || comboBoxPurchaseStore.SelectedIndex == -1)
+            if (textBoxPurchaseQuantity.Text == "" || comboBoxPurchaseBookSelect.SelectedIndex == -1 || comboBoxPurchaseCustomer.SelectedIndex == -1 || comboBoxPurchaseStore.SelectedIndex == -1)
             {
                 MessageBox.Show("Please fill in all the fields.");
                 return;
@@ -132,27 +132,33 @@ namespace Bookstore
                 MessageBox.Show("Please establish database connection first.");
                 return;
             }
-            try
+            if (SelectCommands.SelectInventory(Convert.ToInt32(comboBoxPurchaseStore.SelectedValue), comboBoxPurchaseBookSelect.SelectedValue.ToString()) < Convert.ToInt32(textBoxPurchaseQuantity.Text))
             {
-                InsertCommands.InsertPurchase(Convert.ToInt32(
-                    comboBoxPurchaseCustomer.SelectedValue.ToString()),
-                    comboBoxPurchaseBookSelect.SelectedValue.ToString(),
-                    Convert.ToInt32(textBoxPurchaseQuantity.Text),
-                    Convert.ToInt32(comboBoxPurchaseStore.SelectedValue),
-                    Convert.ToDecimal(textBoxPurchasePrice.Text)
-                    );
-                MessageBox.Show("Purchase has been added successfully!");
-                textBoxPurchaseQuantity.Text = "";
-                textBoxPurchasePrice.Text = "";
-                comboBoxPurchaseBookSelect.SelectedIndex = -1;
-                comboBoxPurchaseStore.SelectedIndex = -1;
-                comboBoxPurchaseCustomer.SelectedIndex = -1;
-                LoadComboBoxData();
+                MessageBox.Show("Not enough inventory in the selected store. Please select a different store or reduce the quantity.");
+                return;
             }
-            catch (Exception)
-            {
-                MessageBox.Show("An error occurred while adding purchase. Please try again.");
-            }
+            //try
+            //{
+            InsertCommands.InsertPurchase(Convert.ToInt32(
+                comboBoxPurchaseCustomer.SelectedValue.ToString()),
+                comboBoxPurchaseBookSelect.SelectedValue.ToString(),
+                Convert.ToInt32(textBoxPurchaseQuantity.Text),
+                Convert.ToInt32(comboBoxPurchaseStore.SelectedValue),
+                Convert.ToDecimal(labelPurchasePriceText.Text)
+                );
+            MessageBox.Show("Purchase has been added successfully!");
+            UpdateCommands.UpdateInventory(comboBoxPurchaseBookSelect.SelectedValue.ToString(), Convert.ToInt32(textBoxPurchaseQuantity.Text), Convert.ToInt32(comboBoxPurchaseStore.SelectedValue));
+            textBoxPurchaseQuantity.Text = "";
+            labelPurchasePriceText.Text = "";
+            comboBoxPurchaseBookSelect.SelectedIndex = -1;
+            comboBoxPurchaseStore.SelectedIndex = -1;
+            comboBoxPurchaseCustomer.SelectedIndex = -1;
+            LoadComboBoxData();
+            //}
+            //catch (Exception)
+            //{
+            //    MessageBox.Show("An error occurred while adding purchase. Please try again.");
+            //}
         }
 
         private void buttonCreateMembership_Click(object sender, EventArgs e)
@@ -221,7 +227,7 @@ namespace Bookstore
             }
             try
             {
-                InsertCommands.InsertInventory(comboBoxInventoryBook.SelectedValue.ToString(), Convert.ToInt32(comboBoxInventoryBookstore.SelectedValue), Convert.ToInt32(textBoxInventoryQuantity.Text));
+                InsertCommands.InsertStores(comboBoxInventoryBook.SelectedValue.ToString(), Convert.ToInt32(comboBoxInventoryBookstore.SelectedValue), Convert.ToInt32(textBoxInventoryQuantity.Text));
                 MessageBox.Show("Inventory has been added successfully!");
                 comboBoxInventoryBook.SelectedIndex = -1;
                 comboBoxInventoryBookstore.SelectedIndex = -1;
@@ -276,6 +282,8 @@ namespace Bookstore
             comboBoxInventoryBookstore.SelectedIndex = -1;
             comboBoxInventoryBookstore.SelectedText = "Select Store";
         }
+
+
         #endregion load data
 
         private void buttonDeleteAll_Click(object sender, EventArgs e)

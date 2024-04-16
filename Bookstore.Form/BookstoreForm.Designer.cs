@@ -65,7 +65,6 @@ namespace Bookstore
             comboBoxPurchaseCustomer = new ComboBox();
             buttonPurchase = new Button();
             buttonInsertData = new Button();
-            textBoxPurchasePrice = new TextBox();
             selectCommandsBindingSource = new BindingSource(components);
             labelMembershipEmail = new Label();
             labelMembershipPassword = new Label();
@@ -78,6 +77,7 @@ namespace Bookstore
             labelCustomerMiddleName = new Label();
             labelCustomerFirstName = new Label();
             buttonDeleteAll = new Button();
+            labelPurchasePriceText = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExcelFile).BeginInit();
             ((System.ComponentModel.ISupportInitialize)selectCommandsBindingSource).BeginInit();
             SuspendLayout();
@@ -340,6 +340,7 @@ namespace Bookstore
             comboBoxPurchaseBookSelect.Size = new Size(121, 23);
             comboBoxPurchaseBookSelect.TabIndex = 29;
             comboBoxPurchaseBookSelect.Text = "Select Book";
+            comboBoxPurchaseBookSelect.SelectedIndexChanged += UpdatePurchasePrice;
             // 
             // comboBoxPurchaseStore
             // 
@@ -356,6 +357,7 @@ namespace Bookstore
             textBoxPurchaseQuantity.Name = "textBoxPurchaseQuantity";
             textBoxPurchaseQuantity.Size = new Size(121, 23);
             textBoxPurchaseQuantity.TabIndex = 31;
+            textBoxPurchaseQuantity.TextChanged += UpdatePurchasePrice;
             // 
             // comboBoxPurchaseCustomer
             // 
@@ -368,7 +370,7 @@ namespace Bookstore
             // 
             // buttonPurchase
             // 
-            buttonPurchase.Location = new Point(628, 542);
+            buttonPurchase.Location = new Point(628, 516);
             buttonPurchase.Name = "buttonPurchase";
             buttonPurchase.Size = new Size(148, 35);
             buttonPurchase.TabIndex = 35;
@@ -385,13 +387,6 @@ namespace Bookstore
             buttonInsertData.Text = "Insert Data";
             buttonInsertData.UseVisualStyleBackColor = true;
             buttonInsertData.Click += buttonInsertData_Click;
-            // 
-            // textBoxPurchasePrice
-            // 
-            textBoxPurchasePrice.Location = new Point(643, 513);
-            textBoxPurchasePrice.Name = "textBoxPurchasePrice";
-            textBoxPurchasePrice.Size = new Size(121, 23);
-            textBoxPurchasePrice.TabIndex = 37;
             // 
             // selectCommandsBindingSource
             // 
@@ -418,11 +413,11 @@ namespace Bookstore
             // labelPurchasePrice
             // 
             labelPurchasePrice.AutoSize = true;
-            labelPurchasePrice.Location = new Point(645, 495);
+            labelPurchasePrice.Location = new Point(643, 495);
             labelPurchasePrice.Name = "labelPurchasePrice";
-            labelPurchasePrice.Size = new Size(36, 15);
+            labelPurchasePrice.Size = new Size(45, 15);
             labelPurchasePrice.TabIndex = 40;
-            labelPurchasePrice.Text = "Price:";
+            labelPurchasePrice.Text = "Price: $";
             // 
             // labelPurchaseQuantity
             // 
@@ -497,11 +492,20 @@ namespace Bookstore
             buttonDeleteAll.UseVisualStyleBackColor = true;
             buttonDeleteAll.Click += buttonDeleteAll_Click;
             // 
+            // labelPurchasePriceText
+            // 
+            labelPurchasePriceText.AutoSize = true;
+            labelPurchasePriceText.Location = new Point(685, 495);
+            labelPurchasePriceText.Name = "labelPurchasePriceText";
+            labelPurchasePriceText.Size = new Size(0, 15);
+            labelPurchasePriceText.TabIndex = 49;
+            // 
             // BookstoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(805, 588);
+            Controls.Add(labelPurchasePriceText);
             Controls.Add(buttonDeleteAll);
             Controls.Add(labelCustomerFirstName);
             Controls.Add(labelCustomerMiddleName);
@@ -513,7 +517,6 @@ namespace Bookstore
             Controls.Add(labelPurchasePrice);
             Controls.Add(labelMembershipPassword);
             Controls.Add(labelMembershipEmail);
-            Controls.Add(textBoxPurchasePrice);
             Controls.Add(buttonInsertData);
             Controls.Add(buttonPurchase);
             Controls.Add(comboBoxPurchaseCustomer);
@@ -556,6 +559,23 @@ namespace Bookstore
             PerformLayout();
         }
 
+        private void UpdatePurchasePrice(object sender, EventArgs e)
+        {
+            if (comboBoxPurchaseBookSelect.SelectedValue == null || textBoxPurchaseQuantity.Text == null)
+            {
+                return;
+            }
+            try
+            {
+                decimal price = SelectCommands.SelectBookPrice(comboBoxPurchaseBookSelect.SelectedValue.ToString()) * Convert.ToInt64(textBoxPurchaseQuantity.Text.ToString());
+                labelPurchasePriceText.Text = price.ToString("F2");
+            }
+            catch (Exception)
+            {
+                // Do nothing
+            }
+        }
+
         #endregion
 
         private Label labelWelcome;
@@ -592,7 +612,6 @@ namespace Bookstore
         private ComboBox comboBoxPurchaseCustomer;
         private Button buttonPurchase;
         private Button buttonInsertData;
-        private TextBox textBoxPurchasePrice;
         private BindingSource selectCommandsBindingSource;
         private Label labelMembershipEmail;
         private Label labelMembershipPassword;
@@ -605,5 +624,6 @@ namespace Bookstore
         private Label labelCustomerMiddleName;
         private Label labelCustomerFirstName;
         private Button buttonDeleteAll;
+        private Label labelPurchasePriceText;
     }
 }

@@ -22,7 +22,7 @@ namespace Bookstore.Data
         public static void DeletePublisher(string name)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "DELETE FROM Publisher WHERE lower(trim(Name)) = @name;";
+            cmd.CommandText = "DELETE FROM Publisher WHERE lower(trim(Pub_Name)) = @name;";
             cmd.Parameters.AddWithValue("@name", name.ToLower());
             cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();

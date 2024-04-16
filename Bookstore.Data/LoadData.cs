@@ -1,5 +1,4 @@
-﻿using Bookstore.Domain;
-using ExcelDataReader;
+﻿using ExcelDataReader;
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Diagnostics;
@@ -155,29 +154,5 @@ namespace Bookstore.Data
 
             return new string[] { firstName, middleName, lastName };
         }
-
-        public static void CleanUpNames()
-        {
-            List<Person> people = SelectCommands.SelectAllPeople();
-
-            foreach (var person in people)
-            {
-                // If the last name is null and the middle name is not, move the middle name to the last name
-                if (person.Last_Name == null && person.Middle_Name != null)
-                {
-                    var updateCmd = DatabaseConnection.conn.CreateCommand();
-                    updateCmd.CommandText = $"UPDATE Person SET Middle_Name = NULL, Last_Name = '{person.Middle_Name}' WHERE Id = {person.Id}";
-                    updateCmd.ExecuteNonQuery();
-                }
-
-                // If there's another person with the same first name and this person's middle name as the last name, delete this person
-                if (people.Any(p => p.First_Name == person.First_Name && p.Last_Name == person.Middle_Name))
-                {
-                    DeleteCommands.DeleteAuthor(person.Id);
-                    DeleteCommands.DeletePersonId(person.Id);
-                }
-            }
-        }
-
     }
 }

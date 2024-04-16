@@ -127,6 +127,14 @@ namespace Bookstore.Data
             };
         }
 
+        public static int SelectBookPrice(string isbn)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Price FROM Book WHERE ISBN = @isbn";
+            cmd.Parameters.AddWithValue("@isbn", isbn);
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
         public static int SelectBookCount(string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
@@ -235,6 +243,26 @@ namespace Bookstore.Data
                 });
             }
             return bookstores;
+        }
+
+        public static int SelectInventory(int storeNum, string isbn)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Quantity FROM Stores WHERE ISBN = @isbn AND Store_Id = @storeNum";
+            cmd.Parameters.AddWithValue("@isbn", isbn);
+            cmd.Parameters.AddWithValue("@storeNum", storeNum);
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        // Purchase
+        public static int SelectPurchaseId(int custId, int storeNumber, decimal price)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT Order_No FROM Purchase WHERE Cust_Id = @custId AND Store_No = @storeNumber AND Price = @price";
+            cmd.Parameters.AddWithValue("@custId", custId);
+            cmd.Parameters.AddWithValue("@storeNumber", storeNumber);
+            cmd.Parameters.AddWithValue("@price", price);
+            return Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
 }
