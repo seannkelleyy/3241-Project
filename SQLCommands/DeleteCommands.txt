@@ -11,7 +11,9 @@ DELETE FROM Publisher WHERE Pub_Name = @name; Or DELETE FROM Publisher WHERE Pub
 
 To delete a Person, you must also delete all Customers and Authors that reference the person being deleted.
 Delete Person: 
-DELETE FROM Person WHERE First_Name = @firstName AND Middle_Name = @middleName AND Last_Name = @lastName; Or DELETE FROM Person where Id = @id;
+DELETE FROM Person WHERE First_Name = @firstName AND Middle_Name = @middleName AND Last_Name = @lastName; 
+Or
+ DELETE FROM Person where Id = @id;
 
 To delete an Author, you must first delete the Person associated with them.
 Delete Author: 
@@ -30,6 +32,7 @@ DELETE FROM Writes WHERE Auth_Id = @id AND ISBN = @isbn;
 
 Delete Stores: 
 DELETE FROM Stores WHERE ISBN = @isbn AND Store_Id = @storeId;
+
 
 Delete Order_Books: 
 DELETE FROM Order_Books WHERE ISBN = @isbn AND Order_No = @orderNumber;
