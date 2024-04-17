@@ -2,6 +2,10 @@ To insert a book, you must have already inserted the publisher. You will also wa
 Insert Book: 
 INSERT INTO Book (ISBN, Title, Pub_Id, Year, Price, Category) VALUES (@isbn, @title, @pubId, @year, @price, @category);
 
+To insert a category, you must have a book already that you want to assign the category to.
+Insert Categories
+INSERT INTO Categories (ISBN, Category) VALUES (@isbn, @category)
+
 Insert Publisher: 
 INSERT INTO Publisher (Name) VALUES (@name)
 
@@ -31,9 +35,9 @@ To insert into writes, you must first have a book created and an author created.
 Insert Writes: 
 INSERT INTO Writes (ISBN, Auth_ID) VALUES (@isbn, @authId);
 
-To insert into Books, you must first have a book and a purchase to add it to.
-Insert Books: 
-INSERT INTO Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);
+To insert into Order_Books, you must first have a book and a purchase to add it to.
+Insert Order_Books: 
+INSERT INTO Order_Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);
 
 To insert into Purchase you must have a Customer, BookStore, and Book(s), which are inserted into the Books table. 
 Insert Purchase: 

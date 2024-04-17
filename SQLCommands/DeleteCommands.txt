@@ -1,6 +1,9 @@
-To delete a Book, you must also delete all: WRITES with that book, BOOKS with that book, and STORES with that book
+To delete a Book, you must also delete all: WRITES with that book, BOOKS with that book, STORES with that book, and CATEGORIES with that book.
 Delete Book: 
 DELETE FROM Book WHERE ISBN = @isbn;
+
+Delete Categories:
+DELETE FROM Categories WHERE ISBN = @isbn AND Category = @category
 
 To delete a Publisher, you must also delete all books that are published by that publisher.
 Delete Publisher: 
@@ -28,8 +31,8 @@ DELETE FROM Writes WHERE Auth_Id = @id AND ISBN = @isbn;
 Delete Stores: 
 DELETE FROM Stores WHERE ISBN = @isbn AND Store_Id = @storeId;
 
-Delete Books: 
-DELETE FROM Books WHERE ISBN = @isbn AND Order_No = @orderNumber;
+Delete Order_Books: 
+DELETE FROM Order_Books WHERE ISBN = @isbn AND Order_No = @orderNumber;
 
 To delete a bookstore, you must also delete all Purchases from that bookstore and all Stores for that Bookstore.
 Delete Bookstore: 
