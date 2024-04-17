@@ -1,0 +1,91 @@
+I: This query finds all the books in the database written by Terry Pratchett and costs less than $10.00.
+R1 ← σ(Last_Name = 'pratchett')(PERSON)
+R2 ← (AUTHOR ⨝ (Auth_Id=ID)R1)
+R3 ← (Writes ⨝ (R2.Auth_Id = Writes.Auth_Id)R2)
+R4 ← (BOOK ⨝ (BOOK.ISBN = R1.ISBN)R3)
+R5 ← σ(Price<10.00)(R4)
+R6 ← π(Title)(R5)
+
+SELECT Title 
+FROM BOOK
+JOIN Writes ON BOOK.ISBN = Writes.ISBN
+JOIN AUTHOR ON AUTHOR.Auth_Id = writes.Auth_ID
+JOIN PERSON ON AUTHOR.Auth_Id = PERSON.Id
+WHERE Last_Name = 'pratchett' AND Price < 10.0;
+
+
+II: This SQL query finds the total amount of books purchased by a singular customer, in this sample, the customer is Jack Orange.
+
+R1 ← σ(First_Name = ‘Jesse’ AND Last_Name = ‘Teal’)(PERSON)
+R2 ← (CUSTOMER ⨝ Cust_Id = IDR1)
+R3 ← (PURCHASE ⨝ R2.Cust_Id = BOOKS.Cust_IDR2)
+R4 ← (BOOKS ⨝ R3.Order_No = BOOKS.Order_NoR3)
+R5 ← Cust_IdℑSUM Quantity(R4)
+
+
+SELECT SUM(ORDER_BOOKS.Quantity)
+FROM PURCHASE
+JOIN CUSTOMER ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id
+JOIN PERSON ON PERSON.Id = CUSTOMER.Cust_Id
+JOIN ORDER_BOOKS ON ORDER_BOOKS.Order_No = PURCHASE.Order_No
+WHERE PERSON.First_Name = 'Jack' AND PERSON.Last_Name = 'Orange'
+
+
+III: Find the customer who has purchased the most books and the total number of books they have purchased.
+
+f MAX (num_books) (⍴ (Cust_Id, Phone_no, Order_num, ISBN, Price, num_books) ( Cust_Id  f SUM(Quantity)(CUSTOMER  ⨝ Cust_Id = Customer_ID  PURCHASES)))
+
+SELECT Cust_Id, SUM(Quantity) as Total_Books_Purchased
+FROM PURCHASE
+JOIN ORDER_BOOKS ON PURCHASE.Order_No = ORDER_BOOKS.Order_no
+GROUP BY Cust_Id
+ORDER BY Total_Books_Purchased DESC
+LIMIT 1;
+
+IV: Find the total number of books the publisher Pratchett has published.
+
+fCOUNT(Pub_Id)((σName = “Pratchett”(PUBLISHER)) ⨝ Pub_Id = Publisher_ID BOOK)
+R1 ← (AUTHOR ⨝ (Auth_Id=ID)PERSON)
+R2 ← (Writes ⨝ (R1.Auth_Id = Writes.Auth_Id)R1)
+R3 ← (BOOK ⨝ (BOOK.ISBN = R1.ISBN)R2)
+R4 ← σLast_Name= ‘pratchett’(R3)
+R5 ← fCOUNT(BOOk.ISBN)(R4)
+
+SELECT COUNT(BOOK.ISBN)
+FROM BOOK
+JOIN PERSON ON AUTHOR.Auth_Id = PERSON.Id
+JOIN Writes ON BOOK.ISBN = Writes.ISBN
+JOIN AUTHOR ON AUTHOR.Auth_Id = writes.Auth_Id
+WHERE Last_Name = 'pratchett';
+
+
+V: Find the number of purchases made by customers with memberships.
+R1
+f COUNT(Member_num)(MEMBERSHIP ⨝ Cust_Id = Cust_Id PURCHASE)
+
+SELECT COUNT(Mem_Id)
+FROM MEMBERSHIP
+JOIN CUSTOMER ON MEMBERSHIP.Mem_Id = CUSTOMER.Cust_ID
+JOIN PURCHASE ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id
+JOIN PERSON ON PERSON.Id = CUSTOMER.Cust_Id
+JOIN ORDER_BOOKS ON ORDER_BOOKS.Order_No = PURCHASE.Order_No
+WHERE MEMBERSHIP.Mem_Id = CUSTOMER.Cust_Id
+
+
+VI:  Find and list the titles and ISBNs of books that <a certain author> has written that are published by Pratchett.
+
+AUTH_BOOK ← (((σAuth_Id = author_idAUTHOR)⨝Auth_Id = Author_ID”WRITES) * BOOK)
+πtitle, ISBN(σName = “Pratchett”(AUTH_BOOK ⨝Publisher_ID = Pub_ID PUBLISHER))
+
+SELECT title, ISBN
+FROM (
+	SELECT *
+	FROM AUTHOR
+	JOIN WRITES ON AUTHOR.Auth_Id = WRITES.Auth_ID
+	JOIN BOOK ON WRITES.ISBN = BOOK.ISBN
+	WHERE WRITES.Auth_Id = 'author_id'
+) AS AUTH_BOOK
+JOIN PUBLISHER ON AUTH_BOOK.Pub_ID = PUBLISHER.Pub_ID
+WHERE Pub_Name = 'Pratchett';
+
+
