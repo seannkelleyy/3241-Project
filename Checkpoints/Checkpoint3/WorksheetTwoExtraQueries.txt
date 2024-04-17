@@ -1,0 +1,27 @@
+﻿Find the total number of books the publisher Pratchett has published.
+SELECT COUNT(Pub_Id) 
+FROM PUBLISHER 
+JOIN BOOK ON PUBLISHER.Pub_Id = BOOK.Pub_Id 
+WHERE Name = 'Pratchett';
+
+
+
+
+Find the number of purchases made by customers with memberships.
+SELECT COUNT(Member_num) 
+FROM MEMBERSHIP 
+JOIN PURCHASE ON MEMBERSHIP.Cust_Id = PURCHASE.Cust_Id;
+
+
+
+
+Find and list the titles and ISBNs of books that <a certain author> has written that are published by Pratchett.
+SELECT title, ISBN 
+FROM (
+    SELECT * 
+    FROM AUTHOR 
+    JOIN WRITES ON AUTHOR.Auth_Id = WRITES.Author_ID 
+    JOIN BOOK ON WRITES.Book_ID = BOOK.ISBN
+) AS AUTH_BOOK 
+JOIN PUBLISHER ON AUTH_BOOK.Publisher_ID = PUBLISHER.Pub_ID 
+WHERE Pub_Name = 'Pratchett', Auth_Id = <author_id>;
