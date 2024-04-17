@@ -25,10 +25,7 @@ namespace Bookstore.Data
             {
                 return -1;
             }
-            else
-            {
-                return Convert.ToInt32(result);
-            }
+            return Convert.ToInt32(result);
         }
 
         public static Person SelectPerson(int id)
@@ -156,10 +153,6 @@ namespace Bookstore.Data
             cmd.CommandText = "SELECT COUNT(*) FROM Book WHERE ISBN = @isbn";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             int count = Convert.ToInt32(cmd.ExecuteScalar());
-            if (count == 0)
-            {
-                return -1;
-            }
             return count;
         }
 

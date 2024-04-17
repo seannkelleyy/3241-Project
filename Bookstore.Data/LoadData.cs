@@ -149,10 +149,17 @@ namespace Bookstore.Data
             }
 
             // Check if the middle name is actually a last name
-            if (middleName != null && lastName == null)
+            if ((middleName != null || middleName != "") && (lastName == null || lastName == ""))
             {
                 lastName = middleName;
                 middleName = null;
+            }
+
+            if (lastName.Contains(" "))
+            {
+                string[] parts = lastName.Split(' ');
+                lastName = parts[parts.Length - 1];
+                middleName = string.Join(" ", parts.Take(parts.Length - 1));
             }
 
             return new string[] { firstName, middleName, lastName };

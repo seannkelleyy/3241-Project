@@ -80,6 +80,7 @@ namespace Bookstore
             {
                 LoadData.LoadExcelData(textboxFileName.Text);
                 MessageBox.Show("Data has been loaded successfully!");
+                LoadComboBoxData();
             }
             catch (Exception)
             {
@@ -310,6 +311,7 @@ namespace Bookstore
             {
                 InsertCommands.InsertTestData();
                 MessageBox.Show("Test data has been added successfully!");
+                LoadComboBoxData();
             }
             catch (Exception)
             {

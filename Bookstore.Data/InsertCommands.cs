@@ -11,6 +11,11 @@ namespace Bookstore.Data
             {
                 return SelectCommands.SelectPersonId(firstName, middleName, lastName);
             }
+            //if (middleName != null || (middleName != "" && lastName == null) || lastName == "")
+            //{
+            //    lastName = middleName;
+            //    middleName = "";
+            //}
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "INSERT INTO Person (First_Name, Middle_Name, Last_Name) VALUES (@firstName, @middleName, @lastName);";
             cmd.Parameters.AddWithValue("@firstName", firstName);
@@ -195,7 +200,7 @@ namespace Bookstore.Data
             string[] storeLocations = { "123 Main St", "456 Elm St", "789 Oak St", "1011 Pine St", "1213 Maple St", "1415 Cedar St", "1617 Walnut St", "1819 Birch St", "2021 Spruce St", "2223 Ash St", "2425 Willow St", "2627 Cherry St", "2829 Chestnut St", "3031 Beech St", "3233 Alder St", "3435 Holly St", "3637 Hazel St", "3839 Aspen St", "4041 Larch St", "4243 Poplar St" };
             string[] phoneNumbers = { "5555555555", "5555555556", "5555555557", "5555555558", "5555555559", "5555555560", "5555555561", "5555555562", "5555555563", "5555555564", "5555555565", "5555555566", "5555555567", "5555555568", "5555555569", "5555555570", "5555555571", "5555555572", "5555555573", "5555555574" };
             Random rand = new Random();
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 40; i++)
             {
                 int randomIndex1 = rand.Next(firstNames.Length);
                 int randomIndex2 = rand.Next(middleNames.Length);
@@ -209,8 +214,8 @@ namespace Bookstore.Data
                 int custId = InsertCustomer(firstNames[randomIndex1], middleNames[randomIndex2 % 10], lastNames[randomIndex3], phoneNumbers[randomIndex5]);
                 InsertBookstore(storeLocations[randomIndex4]);
                 InsertMembership(custId, $"email{i}@example.com", $"password{i}");
-                InsertStores(SelectCommands.SelectRandomBook(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), (3 * i) + 1);
-                InsertPurchase(SelectCommands.SelectCustomerByPhone(phoneNumbers[randomIndex5]), SelectCommands.SelectRandomBook(), 1, SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
+                InsertStores(SelectCommands.SelectRandomBook(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), i + rand.Next());
+                InsertPurchase(SelectCommands.SelectCustomerByPhone(phoneNumbers[randomIndex5]), SelectCommands.SelectRandomBook(), i + rand.Next(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
             }
         }
     }
