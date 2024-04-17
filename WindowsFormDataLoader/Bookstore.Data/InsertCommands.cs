@@ -189,6 +189,10 @@ namespace Bookstore.Data
 
         public static void InsertCategory(string isbn, string category)
         {
+            if (SelectCommands.SelectCategoryCount(isbn, category) > 0)
+            {
+                return;
+            }
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "INSERT INTO Categories (ISBN, Category) VALUES (@isbn, @category);";
             cmd.Parameters.AddWithValue("@isbn", isbn);
@@ -221,8 +225,8 @@ namespace Bookstore.Data
                 int custId = InsertCustomer(firstNames[randomIndex1], middleNames[randomIndex2 % 10], lastNames[randomIndex3], phoneNumbers[randomIndex5]);
                 InsertBookstore(storeLocations[randomIndex4]);
                 InsertMembership(custId, $"email{i}@example.com", $"password{i}");
-                InsertStores(SelectCommands.SelectRandomBook(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), i + rand.Next());
-                InsertPurchase(SelectCommands.SelectRandomCustomerId(), SelectCommands.SelectRandomBook(), i + rand.Next(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
+                InsertStores(SelectCommands.SelectRandomBook(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), i + rand.Next(50, 100));
+                InsertPurchase(SelectCommands.SelectRandomCustomerId(), SelectCommands.SelectRandomBook(), i + rand.Next(0, 50), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
             }
         }
     }
