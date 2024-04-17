@@ -76,16 +76,16 @@ namespace Bookstore
                 MessageBox.Show("Please select an excel file to load.");
                 return;
             }
-            try
-            {
-                LoadData.LoadExcelData(textboxFileName.Text);
-                MessageBox.Show("Data has been loaded successfully!");
-                LoadComboBoxData();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("An error occurred while loading data. Please try again.");
-            }
+            //try
+            //{
+            LoadData.LoadExcelData(textboxFileName.Text);
+            MessageBox.Show("Data has been loaded successfully!");
+            LoadComboBoxData();
+            //}
+            //catch (Exception)
+            //{
+            //    MessageBox.Show("An error occurred while loading data. Please try again.");
+            //}
         }
 
         #endregion Data Insertion
@@ -286,6 +286,8 @@ namespace Bookstore
 
         #endregion load data
 
+        #region Adding/Deleting
+
         private void buttonDeleteAll_Click(object sender, EventArgs e)
         {
             if (DatabaseConnection.conn == null)
@@ -318,5 +320,7 @@ namespace Bookstore
                 MessageBox.Show("An error occurred while adding test data. Please try again.");
             }
         }
+
+        #endregion
     }
 }

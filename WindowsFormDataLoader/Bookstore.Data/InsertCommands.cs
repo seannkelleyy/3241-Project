@@ -11,11 +11,6 @@ namespace Bookstore.Data
             {
                 return SelectCommands.SelectPersonId(firstName, middleName, lastName);
             }
-            //if (middleName != null || (middleName != "" && lastName == null) || lastName == "")
-            //{
-            //    lastName = middleName;
-            //    middleName = "";
-            //}
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
             cmd.CommandText = "INSERT INTO Person (First_Name, Middle_Name, Last_Name) VALUES (@firstName, @middleName, @lastName);";
             cmd.Parameters.AddWithValue("@firstName", firstName);
@@ -60,20 +55,23 @@ namespace Bookstore.Data
             return SelectCommands.SelectAuthorId(personId);
         }
 
-        public static string InsertBook(string isbn, string title, int publisherId, int year, decimal price, string category)
+        public static string InsertBook(string isbn, string title, int publisherId, int year, decimal price)
         {
             if (SelectCommands.SelectBookById(isbn) != null)
             {
                 return isbn;
             }
+            if (isbn == "0000000000")
+            {
+                return "-1";
+            }
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO Book (ISBN, Title, Pub_Id, Year, Price, Category) VALUES (@isbn, @title, @pubId, @year, @price, @category);";
+            cmd.CommandText = "INSERT INTO Book (ISBN, Title, Pub_Id, Year, Price) VALUES (@isbn, @title, @pubId, @year, @price);";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@title", title);
             cmd.Parameters.AddWithValue("@pubId", publisherId);
             cmd.Parameters.AddWithValue("@year", year);
             cmd.Parameters.AddWithValue("@price", price);
-            cmd.Parameters.AddWithValue("@category", category);
             cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return isbn;
@@ -82,7 +80,7 @@ namespace Bookstore.Data
         public static void InsertBookPurchase(string isbn, int quantity, int orderNumber)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);";
+            cmd.CommandText = "INSERT INTO Order_Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@quantity", quantity);
             cmd.Parameters.AddWithValue("@orderNumber", orderNumber);
@@ -97,7 +95,6 @@ namespace Bookstore.Data
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@authId", authorId);
             Debug.WriteLine("Inserting Writes: " + isbn + " " + authorId);
-            Debug.WriteLine("Inserting Writes: " + SelectCommands.SelectBookById(isbn) + " " + SelectCommands.SelectAuthorId(authorId));
             cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
         }
@@ -182,10 +179,20 @@ namespace Bookstore.Data
         public static void InsertPurchaseBook(string isbn, int quantity, int orderNumber)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);";
+            cmd.CommandText = "INSERT INTO Order_Books (ISBN, Quantity, Order_No) VALUES (@isbn, @quantity, @orderNumber);";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             cmd.Parameters.AddWithValue("@quantity", quantity);
             cmd.Parameters.AddWithValue("@orderNumber", orderNumber);
+            cmd.ExecuteNonQuery();
+            cmd.Parameters.Clear();
+        }
+
+        public static void InsertCategory(string isbn, string category)
+        {
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO Categories (ISBN, Category) VALUES (@isbn, @category);";
+            cmd.Parameters.AddWithValue("@isbn", isbn);
+            cmd.Parameters.AddWithValue("@category", category);
             cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
         }
@@ -197,7 +204,7 @@ namespace Bookstore.Data
             string[] firstNames = { "John", "Jane", "James", "Jill", "Jack", "Jenny", "Jared", "Jasmine", "Jasper", "Jocelyn", "Jude", "Jenna", "Jesse", "Jill", "Jacob", "Julia", "Jodie", "Jeremy", "Janet", "Justin" };
             string[] lastNames = { "Smith", "Doe", "Johnson", "Brown", "White", "Black", "Green", "Blue", "Red", "Orange", "Purple", "Yellow", "Gray", "Pink", "Cyan", "Magenta", "Lavender", "Maroon", "Teal", "Robinson" };
             string[] middleNames = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T" };
-            string[] storeLocations = { "123 Main St", "456 Elm St", "789 Oak St", "1011 Pine St", "1213 Maple St", "1415 Cedar St", "1617 Walnut St", "1819 Birch St", "2021 Spruce St", "2223 Ash St", "2425 Willow St", "2627 Cherry St", "2829 Chestnut St", "3031 Beech St", "3233 Alder St", "3435 Holly St", "3637 Hazel St", "3839 Aspen St", "4041 Larch St", "4243 Poplar St" };
+            string[] storeLocations = { "123 Main St", "456 Elm St", "789 Oak St", "1011 Pine St", "1213 Maple St", "1415 Cedar St", "1617 Walnut St", "1819 Birch St", "2021 Spruce St", "2223 Ash St", "2425 Willow St", "2627 Cherry St", "2829 Chestnut St", "3031 Beech St", "3233 Alder St", "3435 Holly St", "3637 Hazel St", "3839 Aspen St", "4041 Larch St", "4243 Poplar St", "250 S High St", "2015 Neil Ave", "2069 Neil Ave", "2020 Neil Ave" };
             string[] phoneNumbers = { "5555555555", "5555555556", "5555555557", "5555555558", "5555555559", "5555555560", "5555555561", "5555555562", "5555555563", "5555555564", "5555555565", "5555555566", "5555555567", "5555555568", "5555555569", "5555555570", "5555555571", "5555555572", "5555555573", "5555555574" };
             Random rand = new Random();
             for (int i = 0; i < 40; i++)
@@ -215,7 +222,7 @@ namespace Bookstore.Data
                 InsertBookstore(storeLocations[randomIndex4]);
                 InsertMembership(custId, $"email{i}@example.com", $"password{i}");
                 InsertStores(SelectCommands.SelectRandomBook(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), i + rand.Next());
-                InsertPurchase(SelectCommands.SelectCustomerByPhone(phoneNumbers[randomIndex5]), SelectCommands.SelectRandomBook(), i + rand.Next(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
+                InsertPurchase(SelectCommands.SelectRandomCustomerId(), SelectCommands.SelectRandomBook(), i + rand.Next(), SelectCommands.SelectBookstoreId(storeLocations[randomIndex4]), 10.00m);
             }
         }
     }

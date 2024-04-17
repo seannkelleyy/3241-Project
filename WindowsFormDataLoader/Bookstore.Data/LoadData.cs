@@ -33,6 +33,10 @@ namespace Bookstore.Data
                             object? queryResult;
 
                             string? isbn = dataRow[0]?.ToString()?.PadLeft(10, '0');
+                            if (isbn.Equals("0000000000"))
+                            {
+                                continue;
+                            }
                             if (string.IsNullOrEmpty(isbn))
                             {
                                 isbn = lastISBN;
@@ -81,7 +85,12 @@ namespace Bookstore.Data
 
                             if (bookCount == 0)
                             {
-                                InsertCommands.InsertBook(isbn, title, pubId, year, (decimal)price, category);
+                                InsertCommands.InsertBook(isbn, title, pubId, year, (decimal)price);
+                            }
+
+                            if (SelectCommands.SelectCategoryCount(isbn, category) != -1 && category != null && category != "" && SelectCommands.SelectBookById(isbn) != null)
+                            {
+                                InsertCommands.InsertCategory(isbn, category);
                             }
 
                             if (SelectCommands.SelectWritesId(isbn, authId) == -1)

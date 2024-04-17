@@ -114,7 +114,7 @@ namespace Bookstore.Data
         public static Book SelectBookById(string isbn)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "SELECT ISBN, Title, Pub_Id, Year, Price, Category FROM Book WHERE ISBN = @isbn";
+            cmd.CommandText = "SELECT ISBN, Title, Pub_Id, Year, Price FROM Book WHERE ISBN = @isbn";
             cmd.Parameters.AddWithValue("@isbn", isbn);
             SqliteDataReader reader = cmd.ExecuteReader();
 
@@ -130,7 +130,6 @@ namespace Bookstore.Data
                 PublisherId = Convert.ToInt32(reader["Pub_Id"]),
                 Year = Convert.ToInt32(reader["Year"]),
                 Price = Convert.ToDecimal(reader["Price"]),
-                Category = reader["Category"].ToString()
             };
         }
 
@@ -172,7 +171,6 @@ namespace Bookstore.Data
                     PublisherId = Convert.ToInt32(reader["Pub_Id"]),
                     Year = Convert.ToInt32(reader["Year"]),
                     Price = Convert.ToDecimal(reader["Price"]),
-                    Category = reader["Category"].ToString()
                 });
             }
             return books;
@@ -348,6 +346,21 @@ namespace Bookstore.Data
                 return -1;
             }
             return id;
+        }
+
+        // Categories
+        public static int SelectCategoryCount(string isbn, string? category)
+        {
+            if (category == null || category.Equals(""))
+            {
+                return -1;
+            }
+            SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
+            cmd.CommandText = "SELECT COUNT(*) FROM Categories WHERE ISBN = @isbn AND  lower(trim(Category)) = @category";
+            cmd.Parameters.AddWithValue("@isbn", isbn);
+            cmd.Parameters.AddWithValue("@category", category.ToLower());
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            return count;
         }
     }
 }
