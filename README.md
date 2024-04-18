@@ -4,7 +4,7 @@ Written By: Sean Kelley, Jack Kern, Tyra Shin, Justin Sparacino, Trey Thomas
 
 #### About:
 
-    This project is for our CSE-3241 class SP24. Our assignment was to create a 			database for a bookstore called 'Bits & Books'. For this project we used Sqlite and C# to create the database and a tool to add the data to the database. The database is pre-populated with data.
+- This project is for our CSE-3241 class SP24. Our assignment was to create a database for a bookstore called 'Bits & Books'. For this project we used Sqlite and C# to create the database and a tool to add the data to the database. The database is pre-populated with data.
 
 #### Loading Data:
 

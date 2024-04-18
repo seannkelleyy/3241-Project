@@ -8,7 +8,7 @@ Insert Categories:
 INSERT INTO Categories (ISBN, Category) VALUES (@isbn, @category)
 
 Insert Publisher: 
-INSERT INTO Publisher (Name) VALUES (@name)
+INSERT INTO Publisher (Pub_Name) VALUES (@name)
 
 Insert Person: 
 INSERT INTO Person (First_Name, Middle_Name, Last_Name) VALUES (@firstName, @middleName, @lastName)

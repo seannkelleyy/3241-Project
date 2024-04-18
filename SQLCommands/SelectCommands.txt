@@ -28,7 +28,7 @@ FROM PURCHASE
 JOIN CUSTOMER ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id
 JOIN PERSON ON PERSON.Id = CUSTOMER.Cust_Id
 JOIN ORDER_BOOKS ON ORDER_BOOKS.Order_No = PURCHASE.Order_No
-WHERE PERSON.First_Name = 'Jack' AND PERSON.Last_Name = 'Orange'
+WHERE PERSON.First_Name = 'Jack' AND PERSON.Last_Name = 'Orange';
 
 
 III: Find the customer who has purchased the most books and the total number of books they have purchased.
@@ -69,7 +69,7 @@ JOIN CUSTOMER ON MEMBERSHIP.Mem_Id = CUSTOMER.Cust_ID
 JOIN PURCHASE ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id
 JOIN PERSON ON PERSON.Id = CUSTOMER.Cust_Id
 JOIN ORDER_BOOKS ON ORDER_BOOKS.Order_No = PURCHASE.Order_No
-WHERE MEMBERSHIP.Mem_Id = CUSTOMER.Cust_Id
+WHERE MEMBERSHIP.Mem_Id = CUSTOMER.Cust_Id;
 
 
 VI:  Find and list the titles and ISBNs of books that <a certain author> has written that are published by Pratchett.
