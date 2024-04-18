@@ -30,8 +30,6 @@ namespace Bookstore.Data
                             DataRow dataRow = dt.Rows[row];
                             Debug.WriteLine($"Processing row {row}...");
 
-                            object? queryResult;
-
                             string? isbn = dataRow[0]?.ToString()?.PadLeft(10, '0');
                             if (isbn.Equals("0000000000"))
                             {
@@ -65,14 +63,10 @@ namespace Bookstore.Data
                                 authId = SelectCommands.SelectAuthorId(personId);
                             }
 
-                            queryResult = SelectCommands.SelectPublisherId(publisherName);
+                            SelectCommands.SelectPublisherId(publisherName);
 
-                            int pubId;
-                            if (queryResult != null)
-                            {
-                                pubId = Convert.ToInt32(queryResult);
-                            }
-                            else
+                            int pubId = SelectCommands.SelectPublisherId(publisherName);
+                            if (pubId == -1)
                             {
                                 pubId = InsertCommands.InsertPublisher(publisherName);
                             }

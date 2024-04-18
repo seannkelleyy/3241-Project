@@ -28,7 +28,7 @@ FROM PURCHASE
 JOIN CUSTOMER ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id
 JOIN PERSON ON PERSON.Id = CUSTOMER.Cust_Id
 JOIN ORDER_BOOKS ON ORDER_BOOKS.Order_No = PURCHASE.Order_No
-WHERE PERSON.First_Name = 'Jack' AND PERSON.Last_Name = 'Orange';
+WHERE PERSON.First_Name = 'Sean' AND PERSON.Last_Name = 'Kelley';
 
 
 III: Find the customer who has purchased the most books and the total number of books they have purchased.
@@ -83,7 +83,7 @@ FROM (
 	FROM AUTHOR
 	JOIN WRITES ON AUTHOR.Auth_Id = WRITES.Auth_ID
 	JOIN BOOK ON WRITES.ISBN = BOOK.ISBN
-	WHERE WRITES.Auth_Id = 'author_id'
+	WHERE WRITES.Auth_Id = 
 ) AS AUTH_BOOK
 JOIN PUBLISHER ON AUTH_BOOK.Pub_ID = PUBLISHER.Pub_ID
 WHERE Pub_Name = 'Pratchett';
@@ -110,4 +110,24 @@ JOIN ORDER_BOOKS ON PURCHASE.Order_No = ORDER_BOOKS.Order_No
 JOIN BOOK ON ORDER_BOOKS.ISBN = BOOK.ISBN 
 JOIN PUBLISHER ON BOOK.Pub_Id = PUBLISHER.Pub_Id 
 WHERE Pub_Name = 'Pratchett';
+
+IX: Update the price of all books published by a certain publisher.
+
+UPDATE BOOK
+SET Price = Price + 10
+WHERE Pub_Id IN (
+    SELECT Pub_Id
+    FROM PUBLISHER
+    WHERE Pub_Name = 'Pratchett'
+);
+
+X: Updates the last name of a Customer using their Cust_Id:
+
+UPDATE PERSON
+SET Last_Name = 'Buckeye'
+WHERE ID IN (
+    SELECT Cust_Id
+    FROM CUSTOMER
+    WHERE Cust_Id = 3584
+);
 

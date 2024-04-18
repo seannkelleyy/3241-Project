@@ -220,8 +220,6 @@ namespace Bookstore.Data
                 int randomIndex5 = rand.Next(phoneNumbers.Length);
 
                 InsertPerson(firstNames[randomIndex1], middleNames[randomIndex2], lastNames[randomIndex3]);
-                InsertPublisher("Publisher " + i);
-                InsertAuthor(SelectCommands.SelectPersonId(firstNames[randomIndex1], middleNames[randomIndex2], lastNames[randomIndex3]));
                 int custId = InsertCustomer(firstNames[randomIndex1], middleNames[randomIndex2 % 10], lastNames[randomIndex3], phoneNumbers[randomIndex5]);
                 InsertBookstore(storeLocations[randomIndex4]);
                 InsertMembership(custId, $"email{i}@example.com", $"password{i}");

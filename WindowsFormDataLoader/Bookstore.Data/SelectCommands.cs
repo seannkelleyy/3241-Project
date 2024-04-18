@@ -72,8 +72,8 @@ namespace Bookstore.Data
         public static int SelectPublisherId(string name)
         {
             SqliteCommand cmd = DatabaseConnection.conn.CreateCommand();
-            cmd.CommandText = "SELECT Pub_Id FROM Publisher WHERE lower(trim(Pub_Name)) = @name";
-            cmd.Parameters.AddWithValue("@name", name.ToLower());
+            cmd.CommandText = "SELECT Pub_Id FROM Publisher WHERE Pub_Name = @name";
+            cmd.Parameters.AddWithValue("@name", name);
             int id = Convert.ToInt32(cmd.ExecuteScalar());
             if (id == 0)
             {
