@@ -88,4 +88,26 @@ FROM (
 JOIN PUBLISHER ON AUTH_BOOK.Pub_ID = PUBLISHER.Pub_ID
 WHERE Pub_Name = 'Pratchett';
 
+VII: Find the titles and ISBNs for all books with less than 5 copies in stock.
+
+π(title,ISBN)(σQuantity<5(BOOK⨝(BOOK.ISBN=STORES.ISBN)STORES))
+
+SELECT Title, BOOK.ISBN
+FROM BOOK
+JOIN STORES ON BOOK.ISBN = STORES.ISBN
+GROUP BY Title, BOOK.ISBN
+HAVING SUM(STORES.Quantity) < 5;
+
+VIII: Give all the customers who purchased a book by Pratchett and the titles of Pratchett books they purchased.
+
+CUSTOMER_BOOK_PUB ← (PURCHASE ⨝ Book = ISBN ( BOOK ⨝ Publisher = Pub_Id PUBLISHER )) π Customer, Title (σ Name = “Pratchett” (CUSTOMER_BOOK_PUB))
+
+SELECT First_Name, Last_Name, Title
+FROM PERSON
+JOIN CUSTOMER ON PERSON.ID = CUSTOMER.Cust_Id
+JOIN PURCHASE ON CUSTOMER.Cust_Id = PURCHASE.Cust_Id 
+JOIN ORDER_BOOKS ON PURCHASE.Order_No = ORDER_BOOKS.Order_No
+JOIN BOOK ON ORDER_BOOKS.ISBN = BOOK.ISBN 
+JOIN PUBLISHER ON BOOK.Pub_Id = PUBLISHER.Pub_Id 
+WHERE Pub_Name = 'Pratchett';
 
